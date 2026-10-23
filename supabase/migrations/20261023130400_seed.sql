@@ -1,0 +1,28 @@
+-- Données de démonstration : familles, les 9 saveurs Pétille, codes promo
+
+insert into public.categories (name, slug, description) values
+  ('Fraîches', 'fraiches', 'Agrumes et herbes pour se désaltérer.'),
+  ('Fruitées', 'fruitees', 'De vrais fruits pressés, des accords qui surprennent.'),
+  ('Gourmandes', 'gourmandes', 'Épices douces et notes caramélisées.');
+
+insert into public.products (category_id, slug, name, tagline, description, story, ingredients, pairing,
+  sugar_g, kcal, price_cents, stock, color, accent, secondary, pattern)
+select c.id, v.slug, v.name, v.tagline, v.description, v.story, v.ingredients, v.pairing,
+  v.sugar_g, v.kcal, v.price_cents, v.stock, v.color, v.accent, v.secondary, v.pattern::public.can_pattern
+from (values
+  ('fraiches', 'citron-yuzu', 'Citron Yuzu', 'Acidulé & solaire', 'Citron jaune pressé, une pointe de yuzu japonais et des bulles fines.', 'Notre toute première recette, née d''un voyage au Japon. Le yuzu apporte une acidité florale qui réveille le citron sans l''écraser.', array['Eau gazéifiée', 'Jus de citron 8 %', 'Jus de yuzu 2 %', 'Sucre de canne bio', 'Zestes de citron'], 'Parfait avec des sushis ou une salade de crevettes.', 4, 18, 250, 120, '#f5c518', '#1f2a1a', '#fff3a3', 'sunburst'),
+  ('fruitees', 'framboise-basilic', 'Framboise Basilic', 'Fruité & herbacé', 'Framboises de France rehaussées d''un basilic frais du jardin.', 'Un duo inattendu trouvé un soir d''été au marché : la douceur des framboises, la fraîcheur poivrée du basilic.', array['Eau gazéifiée', 'Purée de framboise 10 %', 'Infusion de basilic', 'Sucre de canne bio', 'Jus de citron'], 'Idéal avec une burrata ou un dessert au chocolat blanc.', 5, 22, 280, 96, '#e63e6d', '#fff4f6', '#ffb3c7', 'dots'),
+  ('fruitees', 'peche-gingembre', 'Pêche Gingembre', 'Doux & piquant', 'Pêche blanche juteuse et gingembre râpé pour un final qui réveille.', 'La pêche blanche de la vallée du Rhône rencontre un gingembre frais râpé à la main pour un final qui pique juste ce qu''il faut.', array['Eau gazéifiée', 'Purée de pêche blanche 12 %', 'Gingembre frais', 'Sucre de canne bio', 'Jus de citron vert'], 'Super avec un curry doux ou des brochettes grillées.', 5, 24, 280, 72, '#ff8a3d', '#2b1406', '#ffd2a8', 'waves'),
+  ('fraiches', 'concombre-menthe', 'Concombre Menthe', 'Frais & léger', 'Concombre croquant et menthe poivrée, le rafraîchissement absolu.', 'La plus légère de la gamme. Pensée pour les jours de canicule, elle désaltère comme une eau infusée, avec des bulles en plus.', array['Eau gazéifiée', 'Jus de concombre 6 %', 'Menthe poivrée', 'Sucre de canne bio', 'Jus de citron vert'], 'À boire avec un taboulé ou un poke bowl.', 3, 12, 250, 18, '#3fbf7f', '#06200f', '#c4f5d9', 'stripes'),
+  ('gourmandes', 'cola-vanille', 'Cola Vanille', 'Classique revisité', 'Un cola artisanal aux épices douces et à la vanille de Madagascar.', 'Notre version du grand classique : noix de kola, cannelle, agrumes et une vraie gousse de vanille. Sans colorant ni acide phosphorique.', array['Eau gazéifiée', 'Sucre de canne bio', 'Extrait de noix de kola', 'Vanille de Madagascar', 'Épices douces', 'Caramel bio'], 'Indispensable avec un burger maison.', 7, 30, 300, 140, '#5b2a1c', '#fbe9d8', '#c98a5a', 'rings'),
+  ('fruitees', 'myrtille-lavande', 'Myrtille Lavande', 'Floral & intense', 'Myrtilles sauvages et lavande de Provence, tout en délicatesse.', 'Une recette inspirée des champs de Provence en juillet. La lavande est infusée à froid pour garder toute sa délicatesse.', array['Eau gazéifiée', 'Jus de myrtille 10 %', 'Infusion de lavande', 'Sucre de canne bio', 'Jus de citron'], 'Magique avec une tarte au citron ou un fromage de chèvre.', 5, 20, 300, 60, '#5a4fcf', '#f1efff', '#b7b0ff', 'bubbles'),
+  ('fruitees', 'pasteque-hibiscus', 'Pastèque Hibiscus', 'Juteux & acidulé', 'Pastèque gorgée de soleil et fleur d''hibiscus pour une touche acidulée.', 'Édition d''été devenue permanente à la demande générale. L''hibiscus lui donne sa couleur et une petite acidité de cranberry.', array['Eau gazéifiée', 'Jus de pastèque 15 %', 'Infusion d''hibiscus', 'Sucre de canne bio', 'Jus de citron vert'], 'Parfait au bord de la piscine avec des tacos.', 4, 19, 280, 84, '#ff5a5f', '#1e3d14', '#3fa34d', 'split'),
+  ('gourmandes', 'ananas-coco', 'Ananas Coco', 'Tropical & crémeux', 'Ananas rôti et eau de coco, un aller simple pour les tropiques.', 'L''ananas est rôti avant d''être pressé pour développer des notes caramélisées, puis adouci à l''eau de coco.', array['Eau gazéifiée', 'Jus d''ananas rôti 10 %', 'Eau de coco 8 %', 'Sucre de canne bio', 'Jus de citron vert'], 'Génial avec un poulet grillé ou des fruits frais.', 6, 26, 300, 12, '#2ec4b6', '#0b2b28', '#ffe08a', 'zigzag'),
+  ('gourmandes', 'pomme-cannelle', 'Pomme Cannelle', 'Gourmand & réconfortant', 'Pomme normande et cannelle douce, comme une tarte dans une canette.', 'Notre saveur d''automne : des pommes de Normandie pressées à froid et un bâton de cannelle infusé pendant 24 heures.', array['Eau gazéifiée', 'Jus de pomme 15 %', 'Cannelle de Ceylan', 'Sucre de canne bio', 'Jus de citron'], 'À servir avec un crumble ou des crêpes.', 6, 25, 280, 48, '#c0392b', '#fff3e6', '#ff7a6b', 'checker')
+) as v(family, slug, name, tagline, description, story, ingredients, pairing, sugar_g, kcal, price_cents, stock, color, accent, secondary, pattern)
+join public.categories c on c.slug = v.family;
+
+insert into public.coupons (code, percent_off, is_active, expires_at) values
+  ('BIENVENUE10', 10, true, null),
+  ('PSCHITT20', 20, true, now() + interval '60 days'),
+  ('ETE2025', 15, false, now() - interval '30 days');
