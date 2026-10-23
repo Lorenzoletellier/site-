@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fffaf0;
+  --foreground: #1a1a1a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ink: #1a1a1a;
+  --color-cream: #fffaf0;
+  --color-sun: #ffd84d;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-bricolage);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+:focus-visible {
+  outline: 2px solid #1a1a1a;
+  outline-offset: 2px;
+}
+
+/* Champs de formulaire du site Pétille */
+@utility field {
+  @apply w-full rounded-2xl border-2 border-ink/20 bg-white px-4 py-3 outline-none focus:border-ink;
+}
+
+@keyframes float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -14px; }
+}
+
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+/* Le compteur du panier « pop » quand on ajoute une canette */
+@keyframes badge-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.45); }
+  100% { transform: scale(1); }
+}
+
+.float { animation: float 4s ease-in-out infinite; }
+.float-slow { animation: float 5.5s ease-in-out infinite 0.6s; }
+.marquee { animation: marquee 25s linear infinite; }
+.badge-pop { animation: badge-pop 450ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .float, .float-slow, .marquee, .badge-pop { animation: none; }
+}
