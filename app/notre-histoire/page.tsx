@@ -83,7 +83,7 @@ export default async function NotreHistoirePage() {
               Né dans une cuisine, pas dans un labo.
             </h1>
             <p className="mt-6 max-w-md text-lg text-ink/80">
-              Pétille, c&apos;est l&apos;histoire de deux amis qui trouvaient les sodas trop sucrés et pas assez
+              Pétille, c&apos;est l&apos;histoire de deux amis, Romain et Lorenzo, qui trouvaient les sodas trop sucrés et pas assez
               savoureux. Alors ils ont fait les leurs, une casserole à la fois.
             </p>
           </div>
