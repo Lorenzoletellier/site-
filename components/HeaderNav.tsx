@@ -36,14 +36,14 @@ export default function HeaderNav({ isLoggedIn, isAdmin, firstName, lines, subto
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+  // Au-dessus du hero bleu de l'accueil, le menu est transparent et crème
   const solid = !home || scrolled;
 
   return (
     <>
-      {/* Menu en serif fine : logo à gauche, liens et panier à droite. Sur l'accueil il prend la couleur de la saveur */}
+      {/* Menu en serif fine : logo à gauche, liens et panier à droite */}
       <header
-        className={`fixed inset-x-0 top-0 z-40 font-serif transition-[background-color,box-shadow] duration-300 ${solid ? "bg-cream/85 shadow-[0_1px_0_rgba(0,0,0,0.06)] backdrop-blur-md" : ""}`}
-        style={{ color: home ? "var(--hero-ink)" : undefined }}
+        className={`fixed inset-x-0 top-0 z-40 font-serif transition-[background-color,box-shadow,color] duration-300 ${solid ? "bg-cream/85 text-ink shadow-[0_1px_0_rgba(0,0,0,0.06)] backdrop-blur-md" : "text-cream"}`}
       >
         <div className="mx-auto flex h-16 max-w-[1500px] items-center justify-between gap-3 px-4 sm:h-20 sm:px-[5vw]">
           <Link href="/" className="text-[1.7rem] font-semibold tracking-tight sm:text-[2.1rem]" aria-label="Pétille, accueil">

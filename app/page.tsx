@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Can from "@/components/Can";
+import BrandHero from "@/components/home/BrandHero";
 import Hero from "@/components/home/Hero";
 import Messages from "@/components/Messages";
 import { ArrowIcon, DropIcon, LeafIcon, RecycleIcon } from "@/components/Icons";
@@ -23,8 +24,8 @@ export default async function Home() {
   return (
     <>
 
-      {/* Hero : une saveur à la fois, canette 3D et explosion de fruits */}
-      <Hero flavors={flavors} />
+      {/* Hero de marque : fond bleu électrique, canettes 3D, fruits et bulles */}
+      <BrandHero flavors={flavors} />
 
       <div className="overflow-hidden border-y-2 border-ink bg-citron py-3 text-ink">
         <div className="marquee flex w-max gap-10 font-display text-xl font-bold whitespace-nowrap">
@@ -35,6 +36,9 @@ export default async function Home() {
           )}
         </div>
       </div>
+
+      {/* Nos saveurs : une saveur à la fois, canette 3D et explosion de fruits */}
+      <Hero flavors={flavors} />
 
       {/* Pourquoi Pétille */}
       <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6">

@@ -2,32 +2,15 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
 import Can from "@/components/Can";
 import HeroFruits from "./HeroFruits";
 import { HERO_SLUGS, heroFor, heroTitle } from "@/lib/flavor-hero";
 import type { Flavor } from "@/lib/flavors";
-import { hasWebGL } from "@/lib/webgl";
+import { useHydrated, useMedia, useReducedMotion, useWebGL } from "@/lib/hooks";
 
 // La 3D n'est chargée que dans le navigateur
 const HeroCan = dynamic(() => import("./HeroCan"), { ssr: false });
-
-function useMedia(query: string) {
-  return useSyncExternalStore(
-    (onChange) => {
-      const list = window.matchMedia(query);
-      list.addEventListener("change", onChange);
-      return () => list.removeEventListener("change", onChange);
-    },
-    () => window.matchMedia(query).matches,
-    () => false,
-  );
-}
-
-const noop = () => () => {};
-// Faux côté serveur, vrai une fois dans le navigateur : les fruits jaillissent à l'arrivée
-const useHydrated = () => useSyncExternalStore(noop, () => true, () => false);
-const useWebGL = () => useSyncExternalStore(noop, hasWebGL, () => false);
 
 const TRANSITION_MS = 800;
 
@@ -35,9 +18,10 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState<{ index: number; key: number } | null>(null);
   const [ready, setReady] = useState(false);
-  const [inView, setInView] = useState(true);
+  const [inView, setInView] = useState(false);
+  const [seen, setSeen] = useState(false);
   const mobile = useMedia("(max-width: 767px)");
-  const reducedMotion = useMedia("(prefers-reduced-motion: reduce)");
+  const reducedMotion = useReducedMotion();
   const hydrated = useHydrated();
   const webgl = useWebGL();
   const section = useRef<HTMLElement>(null);
@@ -49,7 +33,7 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
   const [line1, line2] = heroTitle(flavor, hero);
   const preload = useMemo(() => flavors.map((f) => f.id).filter((id) => HERO_SLUGS.includes(id)), [flavors]);
 
-  // Couleurs de la saveur sur toute la page (le menu les reprend), animées par @property
+  // Couleurs de la saveur, animées par @property
   useEffect(() => {
     const root = document.documentElement.style;
     root.setProperty("--hero-a", hero.background[0]);
@@ -69,11 +53,17 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
     return () => clearTimeout(id);
   }, [leaving]);
 
-  // Pause de la 3D et de la parallaxe quand le hero sort de l'écran
+  // La 3D ne se charge qu'à l'approche de la section, puis se met en pause quand elle sort de l'écran
   useEffect(() => {
     const el = section.current;
     if (!el) return;
-    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting));
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.isIntersecting);
+        if (entry.isIntersecting) setSeen(true);
+      },
+      { rootMargin: "300px" },
+    );
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
@@ -126,7 +116,8 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
     <section
       ref={section}
       onPointerMove={onPointerMove}
-      className="hero-bg relative h-[100svh] min-h-[620px] overflow-hidden"
+      id="nos-saveurs"
+      className="hero-bg relative h-[100svh] min-h-[620px] scroll-mt-16 overflow-hidden"
       style={{ "--mx": 0, "--my": 0, color: "var(--hero-ink)" } as CSSProperties}
       aria-roledescription="carrousel"
       aria-label="Nos saveurs"
@@ -142,7 +133,7 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
           <div className={`absolute inset-0 grid place-items-center transition-opacity duration-500 ${ready ? "opacity-0" : "opacity-100"}`} aria-hidden>
             <Can {...flavor} className="h-[62%] rotate-[20deg] drop-shadow-2xl" />
           </div>
-          {webgl && (
+          {webgl && seen && (
             <HeroCan
               flavor={flavor}
               preload={preload}
@@ -161,10 +152,10 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
 
       {/* Nom, slogan et bouton */}
       <div className="absolute inset-x-0 bottom-[112px] px-6 font-serif md:inset-x-auto md:top-1/2 md:bottom-auto md:left-[5vw] md:max-w-[44vw] md:-translate-y-[58%] md:px-0">
-        <h1 key={flavor.id} className="hero-title-in text-[clamp(2.6rem,12vw,3.75rem)] leading-[0.92] font-semibold tracking-[-0.025em] md:text-[clamp(3.5rem,8.4vw,9.5rem)]">
+        <h2 key={flavor.id} className="hero-title-in text-[clamp(2.6rem,12vw,3.75rem)] leading-[0.92] font-semibold tracking-[-0.025em] md:text-[clamp(3.5rem,8.4vw,9.5rem)]">
           {line1}
           {line2 && <span className="block">{line2}</span>}
-        </h1>
+        </h2>
         <p key={`slogan-${flavor.id}`} className="hero-title-in mt-3 text-[clamp(1.15rem,4.6vw,1.4rem)] font-light [animation-delay:80ms] md:mt-5 md:text-[clamp(1.25rem,2vw,2rem)]">
           {hero.slogan}
         </p>
