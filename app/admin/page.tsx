@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { RankBars, RevenueChart } from "@/components/admin/Charts";
 import { createClient } from "@/lib/supabase/server";
+import { flavorTone } from "@/lib/color";
 import { formatPrice } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Tableau de bord" };
@@ -62,7 +63,7 @@ export default async function AdminDashboard() {
             <h3 className="font-display mb-4 text-xl font-bold">Top 5 saveurs</h3>
             <RankBars items={(top.data ?? []).map((p) => ({
               label: p.product_name ?? "", value: p.units_sold ?? 0,
-              display: `${p.units_sold} · ${formatPrice(p.revenue_cents ?? 0)}`, color: colorById.get(p.product_id ?? 0),
+              display: `${p.units_sold} · ${formatPrice(p.revenue_cents ?? 0)}`, color: flavorTone(colorById.get(p.product_id ?? 0) ?? "").muted,
             }))} />
           </div>
           <div className="rounded-3xl bg-white p-6 ring-1 ring-ink/5">
@@ -94,13 +95,13 @@ export default async function AdminDashboard() {
         <p className="text-sm font-semibold tracking-[0.2em] text-ink/60 uppercase">Actions</p>
         <h2 className="font-display mt-2 text-4xl font-extrabold">À traiter.</h2>
         <div className="mt-8 grid gap-4 md:grid-cols-3">
-          <Link href="/admin/commandes?statut=paid" className="flex flex-col justify-between rounded-3xl bg-citron p-6 transition hover:-translate-y-1">
+          <Link href="/admin/commandes?statut=paid" className="flex flex-col justify-between rounded-3xl bg-sky p-6 transition hover:-translate-y-1">
             <p className="font-semibold">Commandes à expédier</p>
             <p className="font-display mt-6 text-6xl font-extrabold">{toShip.count ?? 0}</p>
           </Link>
           <Link href="/admin/messages" className="flex flex-col justify-between rounded-3xl bg-ink p-6 text-cream transition hover:-translate-y-1">
             <p className="font-semibold">Messages de contact non traités</p>
-            <p className="font-display mt-6 text-6xl font-extrabold text-citron">{kpi?.open_contacts ?? 0}</p>
+            <p className="font-display mt-6 text-6xl font-extrabold text-corail">{kpi?.open_contacts ?? 0}</p>
             <p className="mt-2 text-xs text-cream/60">{kpi?.newsletter_count ?? 0} inscrits à la newsletter</p>
           </Link>
           <div className="rounded-3xl bg-white p-6 ring-1 ring-ink/5">

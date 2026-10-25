@@ -17,7 +17,7 @@ export function RevenueChart({ points }: { points: DailyPoint[] }) {
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="h-auto w-full" role="img"
       aria-label={`Chiffre d'affaires quotidien sur ${points.length} jours, maximum ${formatPrice(max)}`}>
-      <line x1={pad.side} x2={width - pad.side} y1={height - pad.bottom} y2={height - pad.bottom} stroke="#1a1a1a" strokeOpacity="0.15" />
+      <line x1={pad.side} x2={width - pad.side} y1={height - pad.bottom} y2={height - pad.bottom} stroke="#0c0c14" strokeOpacity="0.15" />
       {points.map((point, index) => {
         const barHeight = (point.revenue / max) * chartHeight;
         const x = pad.side + index * slot + 2;
@@ -25,11 +25,11 @@ export function RevenueChart({ points }: { points: DailyPoint[] }) {
         return (
           <g key={point.day}>
             <rect x={x} y={height - pad.bottom - barHeight} width={barWidth} height={Math.max(barHeight, point.revenue > 0 ? 2 : 0)} rx="3"
-              fill={isToday ? "#1a1a1a" : "#ffd84d"}>
+              fill={isToday ? "#0b1450" : "#1c2fe8"}>
               <title>{`${dayLabel.format(new Date(point.day))} : ${formatPrice(point.revenue)} (${point.orders} commande(s))`}</title>
             </rect>
             {(index % 5 === 0 || isToday) && (
-              <text x={x + barWidth / 2} y={height - 8} textAnchor="middle" fontSize="11" fill="#1a1a1a" fillOpacity="0.6">
+              <text x={x + barWidth / 2} y={height - 8} textAnchor="middle" fontSize="11" fill="#0c0c14" fillOpacity="0.6">
                 {dayLabel.format(new Date(point.day))}
               </text>
             )}
@@ -55,7 +55,7 @@ export function RankBars({ items, empty = "Pas encore de ventes." }: { items: Ra
             <span className="shrink-0 font-semibold tabular-nums">{item.display}</span>
           </div>
           <div className="mt-1 h-2 rounded-full bg-ink/10">
-            <div className="h-full rounded-full" style={{ width: `${(item.value / max) * 100}%`, backgroundColor: item.color ?? "#1a1a1a" }} />
+            <div className="h-full rounded-full" style={{ width: `${(item.value / max) * 100}%`, backgroundColor: item.color ?? "#1c2fe8" }} />
           </div>
         </li>
       ))}

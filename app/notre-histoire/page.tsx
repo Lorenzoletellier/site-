@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Can from "@/components/Can";
+import { flavorTone } from "@/lib/color";
 import { getFlavors } from "@/lib/queries";
 
 export const metadata: Metadata = {
@@ -78,7 +79,7 @@ export default async function NotreHistoirePage() {
       <section className="bg-electric text-cream">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 pt-8 pb-24 sm:px-6 md:grid-cols-2">
           <div>
-            <p className="text-sm font-semibold tracking-[0.2em] text-citron uppercase">Notre histoire</p>
+            <p className="text-sm font-semibold tracking-[0.2em] text-sky uppercase">Notre histoire</p>
             <h1 className="font-display mt-2 text-5xl leading-[0.95] font-extrabold sm:text-7xl">
               Né dans une cuisine, pas dans un labo.
             </h1>
@@ -88,7 +89,7 @@ export default async function NotreHistoirePage() {
             </p>
           </div>
           <div className="relative flex h-80 items-end justify-center sm:h-96">
-            <span className="absolute top-1/2 left-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-citron/40 blur-3xl" />
+            <span className="absolute top-1/2 left-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sky/40 blur-3xl" />
             <Can {...pick("citron-yuzu")} className="float relative h-72 drop-shadow-2xl sm:h-96" />
           </div>
         </div>
@@ -107,10 +108,10 @@ export default async function NotreHistoirePage() {
               <li key={step.year} className="relative grid items-center gap-6 pl-16 md:grid-cols-2 md:gap-16 md:pl-0">
                 <span
                   className="absolute top-2 left-6 h-5 w-5 -translate-x-1/2 rounded-full border-4 border-cream md:top-1/2 md:left-1/2 md:-translate-y-1/2"
-                  style={{ backgroundColor: f.color }}
+                  style={{ backgroundColor: flavorTone(f.color).muted }}
                 />
                 <div className={left ? "md:text-right" : "md:order-2"}>
-                  <p className="font-display text-5xl font-extrabold" style={{ color: f.color }}>
+                  <p className="font-display text-5xl font-extrabold" style={{ color: flavorTone(f.color).muted }}>
                     {step.year}
                   </p>
                   <h3 className="font-display mt-2 text-2xl font-bold">{step.title}</h3>
@@ -118,7 +119,7 @@ export default async function NotreHistoirePage() {
                 </div>
                 <div
                   className={`flex h-48 items-center justify-center rounded-3xl ${left ? "" : "md:order-1"}`}
-                  style={{ backgroundColor: `${f.color}22` }}
+                  style={{ backgroundColor: flavorTone(f.color).soft }}
                 >
                   <Can
                     name={f.name}
@@ -136,7 +137,7 @@ export default async function NotreHistoirePage() {
       </section>
 
       {/* Fabrication */}
-      <section className="bg-citron">
+      <section className="bg-sky/40">
         <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
           <p className="text-sm font-semibold tracking-[0.2em] text-ink/60 uppercase">Notre méthode</p>
           <h2 className="font-display mt-2 text-4xl font-extrabold sm:text-5xl">Comment naît une canette.</h2>
@@ -161,7 +162,7 @@ export default async function NotreHistoirePage() {
           </div>
           {stats.map(([stat, text]) => (
             <div key={stat} className="border-t border-cream/20 pt-6">
-              <p className="font-display text-6xl font-extrabold text-citron">{stat}</p>
+              <p className="font-display text-6xl font-extrabold text-sky">{stat}</p>
               <p className="mt-4 text-cream/80">{text}</p>
             </div>
           ))}

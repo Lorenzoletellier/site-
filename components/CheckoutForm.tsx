@@ -43,7 +43,7 @@ export default function CheckoutForm({ lines, subtotalCents, defaultName }: { li
           </label>
         </div>
         <input type="hidden" name="coupon" value={couponState.percent ? coupon : ""} />
-        <div className="rounded-3xl bg-citron/30 p-5 text-sm">
+        <div className="rounded-3xl bg-sky/40 p-5 text-sm">
           <p className="font-semibold">Paiement simulé</p>
           <p className="text-ink/70">Projet étudiant : aucun paiement réel, la commande est enregistrée comme payée.</p>
         </div>

@@ -14,7 +14,7 @@ export default function CartBadge({ count }: { count: number }) {
   }
 
   return (
-    <span key={popKey} className={`grid h-6 min-w-6 place-items-center rounded-full bg-framboise px-1.5 font-sans text-xs font-bold text-cream ring-2 ring-cream ${popKey ? "badge-pop" : ""}`}>
+    <span key={popKey} className={`grid h-6 min-w-6 place-items-center rounded-full bg-corail px-1.5 font-sans text-xs font-bold text-ink ring-2 ring-cream ${popKey ? "badge-pop" : ""}`}>
       {count}
     </span>
   );

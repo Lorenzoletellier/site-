@@ -1,3 +1,4 @@
+import { mix } from "@/lib/color";
 import type { Flavor } from "@/lib/flavors";
 
 // Mise en scène de chaque saveur dans le hero de l'accueil : slogan, couleurs pastel et fruits.
@@ -92,17 +93,10 @@ const HEROES: Record<string, FlavorHero> = {
 // Éclaboussures communes à toutes les saveurs (public/fx/splash-<n>.png), teintées par `juice`
 export const SPLASHES = ["splash-1", "splash-2"]; // gerbe derrière la canette, vague en dessous
 
-// Mélange deux couleurs hexadécimales (t = part de la seconde)
-function mix(a: string, b: string, t: number) {
-  const channels = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
-  const [ca, cb] = [channels(a), channels(b)];
-  return `#${ca.map((v, i) => Math.round(v + (cb[i] - v) * t).toString(16).padStart(2, "0")).join("")}`;
-}
-
 export function heroFor(flavor: Pick<Flavor, "id" | "color" | "tagline">): FlavorHero {
   const known = HEROES[flavor.id];
   if (known) return known;
-  const color = /^#[0-9a-f]{6}$/i.test(flavor.color) ? flavor.color : "#ffd84d";
+  const color = /^#[0-9a-f]{6}$/i.test(flavor.color) ? flavor.color : "#1c2fe8";
   return {
     slogan: flavor.tagline,
     background: [mix(color, "#ffffff", 0.92), mix(color, "#ffffff", 0.7)],

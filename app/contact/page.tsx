@@ -17,7 +17,7 @@ export default function ContactPage() {
     <>
       <div className="bg-electric text-cream">
         <div className="mx-auto max-w-6xl px-4 pt-8 pb-20 sm:px-6">
-          <p className="text-sm font-semibold tracking-[0.2em] text-citron uppercase">Contact</p>
+          <p className="text-sm font-semibold tracking-[0.2em] text-sky uppercase">Contact</p>
           <h1 className="font-display mt-2 max-w-2xl text-5xl leading-[0.95] font-extrabold sm:text-6xl">
             Une question ? Une envie de bulles ?
           </h1>

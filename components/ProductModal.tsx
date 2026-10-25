@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Can3D from "./Can3D";
+import { flavorTone } from "@/lib/color";
 import { formatPrice, type Flavor } from "@/lib/flavors";
 import { createClient } from "@/lib/supabase/client";
 import { submitReview } from "@/lib/shop-actions";
@@ -83,7 +84,7 @@ export default function ProductModal({ flavor, isLoggedIn, onClose, onAdd }: Pro
 
         <div
           className="flex items-center justify-center p-8"
-          style={{ backgroundColor: `${flavor.color}33` }}
+          style={{ backgroundColor: flavorTone(flavor.color).soft }}
         >
           <Can3D flavor={flavor} className="h-72 w-full md:h-[30rem]" />
         </div>
@@ -128,8 +129,7 @@ export default function ProductModal({ flavor, isLoggedIn, onClose, onAdd }: Pro
             <button
               onClick={onAdd}
               disabled={flavor.stock === 0}
-              className="rounded-full px-6 py-3 font-semibold transition hover:opacity-90 active:scale-95 disabled:opacity-50"
-              style={{ backgroundColor: flavor.color, color: flavor.accent }}
+              className="btn btn-primary px-6 py-3"
             >
               {flavor.stock === 0 ? "Épuisée" : "Ajouter au panier"}
             </button>

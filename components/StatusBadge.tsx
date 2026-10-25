@@ -3,7 +3,7 @@ import type { Enums } from "@/lib/supabase/database.types";
 
 const STATUS_STYLES: Record<Enums<"order_status">, string> = {
   pending: "bg-ink/10 text-ink",
-  paid: "bg-citron text-ink",
+  paid: "bg-sky text-navy",
   shipped: "bg-[#d9e3f0] text-[#23436e]",
   delivered: "bg-[#c4f5d9] text-[#06200f]",
   cancelled: "bg-[#ffd9dc] text-[#8a1c24]",

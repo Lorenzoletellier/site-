@@ -60,12 +60,12 @@ export function NewsletterForm() {
         type="email"
         required
         placeholder="ton@email.fr"
-        className="rounded-full border-2 border-cream/20 bg-transparent px-5 py-3 outline-none focus:border-citron"
+        className="rounded-full border-2 border-cream/20 bg-transparent px-5 py-3 outline-none focus:border-sky"
       />
-      <button disabled={pending} className="btn btn-citron px-6 py-3">
+      <button disabled={pending} className="btn btn-corail px-6 py-3">
         {pending ? "Inscription…" : "S'inscrire"}
       </button>
-      <p aria-live="polite" className={`min-h-5 text-sm ${state.error ? "text-corail" : "text-citron"}`}>
+      <p aria-live="polite" className={`min-h-5 text-sm ${state.error ? "text-corail" : "text-sky"}`}>
         {state.error ?? state.success}
       </p>
     </form>

@@ -6,12 +6,13 @@ import Messages from "@/components/Messages";
 import { ArrowIcon, DropIcon, LeafIcon, RecycleIcon } from "@/components/Icons";
 import { getFlavors } from "@/lib/queries";
 import { formatPrice } from "@/lib/flavors";
+import { flavorTone } from "@/lib/color";
 
 
 const reasons = [
-  { Icon: DropIcon, tint: "bg-citron", title: "Deux fois moins sucré", text: "4 g de sucre pour 100 ml en moyenne, contre 10 g dans un soda classique." },
-  { Icon: LeafIcon, tint: "bg-corail", title: "De vrais fruits bio", text: "Des fruits pressés et des plantes infusées, sans arôme artificiel ni colorant." },
-  { Icon: RecycleIcon, tint: "bg-framboise text-cream", title: "Une canette qui revient", text: "L'aluminium se recycle à l'infini. Trie-la, elle redevient une canette." },
+  { Icon: DropIcon, tint: "bg-electric text-cream", title: "Deux fois moins sucré", text: "4 g de sucre pour 100 ml en moyenne, contre 10 g dans un soda classique." },
+  { Icon: LeafIcon, tint: "bg-navy text-cream", title: "De vrais fruits bio", text: "Des fruits pressés et des plantes infusées, sans arôme artificiel ni colorant." },
+  { Icon: RecycleIcon, tint: "bg-sky", title: "Une canette qui revient", text: "L'aluminium se recycle à l'infini. Trie-la, elle redevient une canette." },
 ];
 
 export default async function Home() {
@@ -27,7 +28,7 @@ export default async function Home() {
       {/* Hero de marque : fond bleu électrique, canettes 3D, fruits et bulles */}
       <BrandHero flavors={flavors} />
 
-      <div className="overflow-hidden border-y-2 border-ink bg-citron py-3 text-ink">
+      <div className="overflow-hidden border-y-2 border-ink bg-navy py-3 text-cream">
         <div className="marquee flex w-max gap-10 font-display text-xl font-bold whitespace-nowrap">
           {Array.from({ length: 2 }).flatMap((_, k) =>
             ["BIO", "PEU SUCRÉ", "VRAIS FRUITS", "FABRIQUÉ EN FRANCE", "100 % RECYCLABLE", "SANS ARÔMES ARTIFICIELS"].map((t) => (
@@ -60,7 +61,7 @@ export default async function Home() {
       </section>
 
       {/* Les plus aimées */}
-      <section className="bg-corail/20">
+      <section className="bg-sky/40">
         <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
@@ -77,7 +78,7 @@ export default async function Home() {
                 key={f.id}
                 href={`/saveurs#${f.id}`}
                 className="group flex items-center gap-6 rounded-3xl p-6 transition hover:-translate-y-1"
-                style={{ backgroundColor: `${f.color}26` }}
+                style={{ backgroundColor: flavorTone(f.color).soft }}
               >
                 <Can
                   {...f}
@@ -98,7 +99,7 @@ export default async function Home() {
       <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
         <div className="grid items-center gap-10 overflow-hidden rounded-[2.5rem] border-2 border-ink bg-electric p-8 text-cream shadow-[8px_8px_0_var(--color-ink)] sm:p-14 md:grid-cols-2">
           <div>
-            <p className="text-sm font-semibold tracking-[0.2em] text-citron uppercase">Depuis 2019</p>
+            <p className="text-sm font-semibold tracking-[0.2em] text-sky uppercase">Depuis 2019</p>
             <h2 className="font-display mt-2 text-4xl font-extrabold sm:text-5xl">Né dans une cuisine, pas dans un labo.</h2>
             <p className="mt-4 max-w-md text-cream/85">
               Un voyage au Japon, 47 essais dans une casserole et un premier stand au marché : découvre comment est né
@@ -106,7 +107,7 @@ export default async function Home() {
             </p>
             <Link
               href="/notre-histoire"
-              className="mt-8 inline-flex items-center gap-2 btn btn-citron px-7 py-4"
+              className="mt-8 btn btn-ghost px-7 py-4"
             >
               Lire notre histoire <ArrowIcon className="h-5 w-5" />
             </Link>

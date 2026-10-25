@@ -6,6 +6,7 @@ import Can from "./Can";
 import ProductModal from "./ProductModal";
 import { changeCartQuantity } from "@/lib/shop-actions";
 import { families, formatPrice, LOW_STOCK, type Family, type Flavor } from "@/lib/flavors";
+import { flavorTone } from "@/lib/color";
 
 type Props = {
   flavors: Flavor[];
@@ -77,7 +78,7 @@ export default function Shop({ flavors, cart, isLoggedIn }: Props) {
                 id={f.id}
                 key={f.id}
                 className="group flex scroll-mt-24 flex-col rounded-3xl p-6 transition hover:-translate-y-1"
-                style={{ backgroundColor: `${f.color}22` }}
+                style={{ backgroundColor: flavorTone(f.color).soft }}
               >
                 <button
                   onClick={() => setSelected(f)}
@@ -114,7 +115,7 @@ export default function Shop({ flavors, cart, isLoggedIn }: Props) {
                     <span>{f.sugar} g / 100 ml · {f.kcal} kcal</span>
                   </div>
                   <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-ink/10">
-                    <div className="h-full rounded-full" style={{ width: `${(f.sugar / 10) * 100}%`, backgroundColor: f.color }} />
+                    <div className="h-full rounded-full" style={{ width: `${(f.sugar / 10) * 100}%`, backgroundColor: flavorTone(f.color).muted }} />
                   </div>
                 </div>
 
@@ -128,8 +129,7 @@ export default function Shop({ flavors, cart, isLoggedIn }: Props) {
                   <button
                     onClick={() => add(f)}
                     disabled={soldOut || pendingId === f.id}
-                    className="btn flex-1 py-3"
-                    style={{ backgroundColor: f.color, color: f.accent }}
+                    className="btn btn-primary flex-1 py-3"
                   >
                     {soldOut ? "Épuisée" : pendingId === f.id ? "Ajout…" : inCart ? `Ajouter (${inCart} au panier)` : "Ajouter au panier"}
                   </button>

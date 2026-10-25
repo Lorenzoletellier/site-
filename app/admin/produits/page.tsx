@@ -4,6 +4,7 @@ import NewFlavorForm from "@/components/admin/NewFlavorForm";
 import { createClient } from "@/lib/supabase/server";
 import { toggleProductActive, updateStock } from "@/lib/admin-actions";
 import { formatPrice } from "@/lib/format";
+import { flavorTone } from "@/lib/color";
 import { LOW_STOCK } from "@/lib/flavors";
 
 export const metadata: Metadata = { title: "Saveurs & stocks" };
@@ -24,7 +25,7 @@ export default async function AdminProductsPage() {
         <h1 className="font-display text-4xl font-extrabold">Saveurs & stocks</h1>
         <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {(products ?? []).map((p) => (
-            <li key={p.id} className={`flex gap-4 rounded-3xl p-5 ${p.is_active ? "" : "opacity-50"}`} style={{ backgroundColor: `${p.color}22` }}>
+            <li key={p.id} className={`flex gap-4 rounded-3xl p-5 ${p.is_active ? "" : "opacity-50"}`} style={{ backgroundColor: flavorTone(p.color).soft }}>
               <Can name={p.name} color={p.color} accent={p.accent} secondary={p.secondary} pattern={p.pattern} className="h-28 shrink-0 drop-shadow-xl" />
               <div className="flex min-w-0 flex-1 flex-col gap-2">
                 <div>

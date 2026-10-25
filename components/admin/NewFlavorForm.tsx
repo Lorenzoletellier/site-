@@ -12,9 +12,9 @@ const label = "flex flex-col gap-2 text-sm font-semibold";
 export default function NewFlavorForm({ categories }: { categories: { id: number; name: string }[] }) {
   const [state, formAction, pending] = useActionState(createProduct, initialState);
   const [name, setName] = useState("Nouvelle saveur");
-  const [color, setColor] = useState("#ffd84d");
-  const [accent, setAccent] = useState("#1a1a1a");
-  const [secondary, setSecondary] = useState("#ffffff");
+  const [color, setColor] = useState("#1c2fe8");
+  const [accent, setAccent] = useState("#fff4e3");
+  const [secondary, setSecondary] = useState("#c3ccff");
   const [pattern, setPattern] = useState<Pattern>("bubbles");
 
   return (

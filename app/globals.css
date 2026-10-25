@@ -5,16 +5,17 @@
   --foreground: #0c0c14;
 }
 
-/* Palette Pétille : bleu électrique (couleur principale), vert citron, orange corail,
-   rose framboise, crème chaud et noir profond. Les saveurs gardent leur couleur d'accent. */
+/* Palette Pétille, volontairement courte : une famille de bleus (électrique, profond, nuit),
+   le crème et le noir, plus un seul accent chaud, le corail, utilisé avec parcimonie.
+   Les couleurs des saveurs sont adoucies dans l'interface (lib/color.ts). */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-electric: #1c2fe8;
-  --color-electric-deep: #0f1a96;
-  --color-citron: #c8f031;
+  --color-electric-deep: #1426b0;
+  --color-navy: #0b1450;
+  --color-sky: #c3ccff;
   --color-corail: #ff6b4a;
-  --color-framboise: #d9195f;
   --color-cream: #fff4e3;
   --color-ink: #0c0c14;
   --font-sans: var(--font-geist-sans);
@@ -39,8 +40,8 @@ body {
 }
 
 ::selection {
-  background: var(--color-citron);
-  color: var(--color-ink);
+  background: var(--color-electric);
+  color: var(--color-cream);
 }
 
 /* Champs de formulaire du site Pétille */
@@ -60,8 +61,11 @@ body {
 @utility btn-primary {
   @apply bg-electric text-cream;
 }
-@utility btn-citron {
-  @apply bg-citron text-ink;
+@utility btn-corail {
+  @apply bg-corail text-ink;
+}
+@utility btn-navy {
+  @apply bg-navy text-cream;
 }
 @utility btn-ghost {
   @apply bg-cream text-ink;
@@ -103,7 +107,7 @@ body {
 @property --hero-a { syntax: "<color>"; inherits: true; initial-value: #fff4e3; }
 @property --hero-b { syntax: "<color>"; inherits: true; initial-value: #fff4e3; }
 @property --hero-ink { syntax: "<color>"; inherits: true; initial-value: #0c0c14; }
-@property --hero-button { syntax: "<color>"; inherits: true; initial-value: #c8f031; }
+@property --hero-button { syntax: "<color>"; inherits: true; initial-value: #1c2fe8; }
 :root { transition: --hero-a 800ms ease, --hero-b 800ms ease, --hero-ink 800ms ease, --hero-button 800ms ease; }
 
 .hero-bg { background: radial-gradient(70% 60% at 50% 30%, var(--hero-b), var(--hero-a) 75%); }

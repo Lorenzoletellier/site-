@@ -49,13 +49,13 @@ function Burst({ className }: { className?: string }) {
 }
 
 const SHAPES: { k: number; spin: number; className: string; node: React.ReactNode }[] = [
-  { k: -0.25, spin: 0.08, className: "top-[14%] left-[46%] w-16 text-citron md:w-24", node: <Burst className="h-full w-full" /> },
-  { k: 0.18, spin: -0.05, className: "bottom-[5%] left-[2%] hidden w-36 text-corail md:block", node: (
+  { k: -0.25, spin: 0.08, className: "top-[14%] left-[46%] w-16 text-sky md:w-24", node: <Burst className="h-full w-full" /> },
+  { k: 0.18, spin: -0.05, className: "bottom-[5%] left-[2%] hidden w-36 text-cream/70 md:block", node: (
     <svg viewBox="0 0 120 40" className="h-full w-full" aria-hidden>
       <path d="M4 20c12-18 22-18 34 0s22 18 34 0 22-18 34 0" fill="none" stroke="currentColor" strokeWidth="9" strokeLinecap="round" />
     </svg>
   ) },
-  { k: -0.4, spin: 0, className: "top-[22%] right-[4%] w-20 text-framboise md:w-28", node: (
+  { k: -0.4, spin: 0, className: "top-[22%] right-[4%] w-20 text-corail md:w-28", node: (
     <svg viewBox="0 0 100 100" className="h-full w-full" aria-hidden>
       <circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" strokeWidth="12" />
     </svg>
@@ -209,9 +209,9 @@ export default function BrandHero({ flavors }: { flavors: Flavor[] }) {
         <div className="relative z-30 md:order-1">
           <h1 className="hero-title-in font-display text-[clamp(2.5rem,11.5vw,4rem)] leading-[0.88] font-extrabold tracking-[-0.03em] uppercase md:text-[clamp(3.6rem,6.6vw,7.4rem)]">
             La vie a plus de goût quand ça{" "}
-            <span className="relative inline-block text-citron">
+            <span className="relative inline-block text-sky">
               pétille.
-              <svg viewBox="0 0 300 24" preserveAspectRatio="none" className="absolute -bottom-[0.12em] left-0 h-[0.18em] w-full text-framboise" aria-hidden>
+              <svg viewBox="0 0 300 24" preserveAspectRatio="none" className="absolute -bottom-[0.12em] left-0 h-[0.18em] w-full text-corail" aria-hidden>
                 <path d="M3 16C60 4 120 4 180 12s90 6 117-4" fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" />
               </svg>
             </span>
@@ -220,7 +220,7 @@ export default function BrandHero({ flavors }: { flavors: Flavor[] }) {
             Des sodas bio, moins sucrés, pleins de caractère. Le plaisir de faire pop les bonnes choses.
           </p>
           <div className="hero-title-in mt-6 flex flex-wrap gap-3 [animation-delay:220ms] md:mt-9 md:gap-4">
-            <Link href="/saveurs" className="btn btn-citron px-6 py-3.5 text-base md:px-8 md:py-4 md:text-lg">
+            <Link href="/saveurs" className="btn btn-corail px-6 py-3.5 text-base md:px-8 md:py-4 md:text-lg">
               Découvrir nos sodas
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" aria-hidden>
                 <path d="M4 12h16M14 6l6 6-6 6" />
