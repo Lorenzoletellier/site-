@@ -22,6 +22,8 @@ const DESKTOP: Slot[] = [
   { x: 86, y: 70, size: 20, depth: "mid" },
   { x: 24, y: 70, size: 20, depth: "mid", front: true },
   { x: 62, y: 76, size: 15, depth: "mid", front: true },
+  { x: 48, y: 96, size: 16, depth: "mid" },
+  { x: 96, y: 54, size: 14, depth: "mid" },
   { x: 112, y: 82, size: 44, depth: "near" },
   { x: 30, y: -4, size: 36, depth: "near" },
   { x: 104, y: 6, size: 26, depth: "near" },
@@ -91,12 +93,12 @@ export default function HeroFruits({ hero, seed, layer, mobile, leaving = false 
 
   const splashes =
     layer === "back"
-      ? (mobile ? SPLASHES.slice(0, 1) : SPLASHES.slice(0, 2)).map((name, i) => ({
+      ? (mobile ? SPLASHES.slice(0, 1) : SPLASHES).map((name, i) => ({
           name,
-          x: i === 0 ? 50 : 56,
-          y: i === 0 ? 74 : 34,
-          width: i === 0 ? 95 : 70,
-          rotate: i === 0 ? -8 : 160,
+          x: 50,
+          y: i === 0 ? 48 : 84,
+          width: i === 0 ? 100 : 80,
+          rotate: i === 0 ? 0 : -6,
         }))
       : [];
 

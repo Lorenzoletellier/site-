@@ -41,9 +41,9 @@ const HEROES: Record<string, FlavorHero> = {
   },
   "ananas-coco": {
     slogan: "Escapade sous les palmiers.",
-    background: ["#fcf0dc", "#f4d398"],
-    ink: "#4d3008",
-    button: "#f3d59b",
+    background: ["#e2f5f1", "#a8e3da"],
+    ink: "#0b3b36",
+    button: "#a3dfd6",
     juice: "#fffaf0",
     fruits: ["pineapple-slice", "coconut-half"],
   },
@@ -65,10 +65,10 @@ const HEROES: Record<string, FlavorHero> = {
   },
   "pomme-cannelle": {
     slogan: "Le verger en automne.",
-    background: ["#eef6df", "#cfe6a6"],
-    ink: "#2f3d0e",
-    button: "#cfe6a8",
-    juice: "#f3f8dc",
+    background: ["#fbe8e2", "#f1b9ab"],
+    ink: "#5a1610",
+    button: "#efb3a6",
+    juice: "#fde6de",
     fruits: ["apple", "apple-half", "cinnamon"],
   },
   "cola-vanille": {
@@ -90,7 +90,7 @@ const HEROES: Record<string, FlavorHero> = {
 };
 
 // Éclaboussures communes à toutes les saveurs (public/fx/splash-<n>.png), teintées par `juice`
-export const SPLASHES = ["splash-1", "splash-2", "splash-3"];
+export const SPLASHES = ["splash-1", "splash-2"]; // gerbe derrière la canette, vague en dessous
 
 // Mélange deux couleurs hexadécimales (t = part de la seconde)
 function mix(a: string, b: string, t: number) {

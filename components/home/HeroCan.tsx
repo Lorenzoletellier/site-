@@ -88,7 +88,7 @@ export default function HeroCan({ flavor, preload, pointer, reducedMotion, mobil
       frameloop={running ? "always" : "never"}
       dpr={mobile ? [1, 1.5] : [1, 2]}
       gl={{ alpha: true, antialias: !mobile, powerPreference: "high-performance" }}
-      camera={{ position: [0, 0, 11.5], fov: 30 }}
+      camera={{ position: [0, 0, mobile ? 9.5 : 11.5], fov: 30 }}
       style={{ pointerEvents: "none" }}
     >
       {/* Lumière de studio claire : reflets blancs sur le métal, ombres douces */}

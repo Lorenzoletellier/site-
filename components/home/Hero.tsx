@@ -129,8 +129,8 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
       aria-label="Nos saveurs"
     >
       {/* Scène de la canette : fruits du fond, canette 3D, fruits du premier plan */}
-      <div className="absolute inset-x-0 top-[8%] bottom-[47%] md:inset-y-0 md:left-[34%] md:w-[54%]">
-        <div className="absolute top-1/2 left-1/2 aspect-square h-[85%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/45 blur-3xl" aria-hidden />
+      <div className="absolute inset-x-0 top-[7%] bottom-[40%] md:inset-y-0 md:left-[34%] md:w-[54%]">
+        <div className="absolute top-1/2 left-1/2 aspect-square h-[85%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/25 blur-3xl" aria-hidden />
 
         {hydrated && old && <HeroFruits key={`back-${leaving!.key}`} hero={heroFor(old)} seed={leaving!.index} layer="back" mobile={mobile} leaving />}
         {hydrated && <HeroFruits key={`back-${flavor.id}`} hero={hero} seed={index} layer="back" mobile={mobile} />}
@@ -156,7 +156,7 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
 
       {/* Nom, slogan et bouton */}
       <div className="absolute inset-x-0 bottom-[112px] px-6 font-serif md:inset-x-auto md:top-1/2 md:bottom-auto md:left-[5vw] md:max-w-[44vw] md:-translate-y-[58%] md:px-0">
-        <h1 key={flavor.id} className="hero-title-in text-[clamp(2.6rem,12vw,3.75rem)] leading-[0.92] font-semibold tracking-[-0.025em] md:text-[clamp(3.5rem,7.6vw,8.75rem)]">
+        <h1 key={flavor.id} className="hero-title-in text-[clamp(2.6rem,12vw,3.75rem)] leading-[0.92] font-semibold tracking-[-0.025em] md:text-[clamp(3.5rem,8.4vw,9.5rem)]">
           {line1}
           {line2 && <span className="block">{line2}</span>}
         </h1>
@@ -180,7 +180,7 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
         role="radiogroup"
         aria-label="Choisir une saveur"
         onKeyDown={onSelectorKey}
-        className="absolute inset-x-0 bottom-4 flex snap-x gap-1 overflow-x-auto px-4 pt-2 pb-2 font-serif [scrollbar-width:none] md:right-auto md:bottom-8 md:left-[5vw] md:max-w-[52vw] md:flex-wrap md:overflow-visible md:px-0"
+        className="absolute inset-x-0 bottom-4 flex snap-x gap-1 overflow-x-auto px-4 pt-2 pb-2 font-serif [scrollbar-width:none] md:right-auto md:bottom-8 md:left-[5vw] md:max-w-[60vw] md:px-0"
       >
         {flavors.map((f, i) => {
           const active = i === index;
@@ -192,7 +192,7 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
               aria-checked={active}
               tabIndex={active ? 0 : -1}
               onClick={() => select(i)}
-              className="group flex w-[76px] shrink-0 snap-start flex-col items-center gap-2 rounded-xl py-1 text-center"
+              className="group flex w-[74px] shrink-0 snap-start flex-col items-center gap-2 rounded-xl py-1 text-center"
             >
               <span
                 className={`block h-8 w-8 rounded-full transition duration-300 group-hover:scale-110 md:h-9 md:w-9 ${active ? "outline-[1.5px] outline-offset-[5px] outline-solid" : ""}`}
