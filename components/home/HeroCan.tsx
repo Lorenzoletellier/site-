@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type RefObject } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import CanObject, { modelUrl } from "@/components/three/CanObject";
@@ -28,6 +28,47 @@ function FloatingCan({ flavor, pointer, reducedMotion, onReady }: Omit<HeroCanPr
   const boost = useRef(0);
   const scale = useRef(1);
   const elapsed = useRef(0);
+  // On peut attraper la canette : glisser pour la faire tourner, elle garde son élan en la lâchant
+  const drag = useRef({ active: false, x: 0, y: 0, velocity: 0, tilt: 0 });
+  const gl = useThree((state) => state.gl);
+
+  useEffect(() => {
+    const el = gl.domElement;
+    const down = (e: PointerEvent) => {
+      drag.current = { ...drag.current, active: true, x: e.clientX, y: e.clientY, velocity: 0 };
+      el.setPointerCapture(e.pointerId);
+      el.style.cursor = "grabbing";
+    };
+    const move = (e: PointerEvent) => {
+      const d = drag.current;
+      if (!d.active) return;
+      const dx = e.clientX - d.x;
+      const dy = e.clientY - d.y;
+      d.x = e.clientX;
+      d.y = e.clientY;
+      if (spin.current) spin.current.rotation.y += dx * 0.012;
+      d.velocity = dx * 0.012 * 60;
+      d.tilt = THREE.MathUtils.clamp(d.tilt + dy * 0.004, -0.5, 0.5);
+    };
+    const up = (e: PointerEvent) => {
+      drag.current.active = false;
+      if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+      el.style.cursor = "grab";
+    };
+    el.style.cursor = "grab";
+    el.addEventListener("pointerdown", down);
+    el.addEventListener("pointermove", move);
+    el.addEventListener("pointerup", up);
+    el.addEventListener("pointercancel", up);
+    el.addEventListener("lostpointercapture", up);
+    return () => {
+      el.removeEventListener("pointerdown", down);
+      el.removeEventListener("pointermove", move);
+      el.removeEventListener("pointerup", up);
+      el.removeEventListener("pointercancel", up);
+      el.removeEventListener("lostpointercapture", up);
+    };
+  }, [gl]);
 
   // Nouvelle saveur : la canette accélère sa rotation, rétrécit, change de modèle puis revient
   useEffect(() => {
@@ -52,14 +93,21 @@ function FloatingCan({ flavor, pointer, reducedMotion, onReady }: Omit<HeroCanPr
     o.scale.setScalar(scale.current);
 
     boost.current = THREE.MathUtils.damp(boost.current, 0, 2.6, delta);
-    if (!reducedMotion) s.rotation.y += (0.35 + boost.current) * delta;
+    const d = drag.current;
+    if (!d.active) {
+      // Élan après le lâcher, puis retour à la rotation lente et à l'inclinaison normale
+      d.velocity = THREE.MathUtils.damp(d.velocity, 0, 2.2, delta);
+      d.tilt = THREE.MathUtils.damp(d.tilt, 0, 2, delta);
+      s.rotation.y += d.velocity * delta;
+      if (!reducedMotion) s.rotation.y += (0.35 + boost.current) * delta;
+    }
 
     const px = reducedMotion ? 0 : pointer.current?.x ?? 0;
     const py = reducedMotion ? 0 : pointer.current?.y ?? 0;
     const float = reducedMotion ? 0 : Math.sin(t * 0.9) * 0.12;
     o.position.y = THREE.MathUtils.damp(o.position.y, float + (dip < 1 ? 0.25 : 0), 6, delta);
     o.rotation.z = THREE.MathUtils.damp(o.rotation.z, TILT + (reducedMotion ? 0 : Math.sin(t * 0.6) * 0.04) - px * 0.08, 4, delta);
-    o.rotation.x = THREE.MathUtils.damp(o.rotation.x, 0.12 + py * 0.12, 4, delta);
+    o.rotation.x = THREE.MathUtils.damp(o.rotation.x, 0.12 + py * 0.12 + d.tilt, 4, delta);
     state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, px * 0.25, 3, delta);
     state.camera.lookAt(0, 0, 0);
   });
@@ -89,7 +137,7 @@ export default function HeroCan({ flavor, preload, pointer, reducedMotion, mobil
       dpr={mobile ? [1, 1.5] : [1, 2]}
       gl={{ alpha: true, antialias: !mobile, powerPreference: "high-performance" }}
       camera={{ position: [0, 0, mobile ? 9.5 : 11.5], fov: 30 }}
-      style={{ pointerEvents: "none" }}
+      style={{ touchAction: "pan-y" }}
     >
       {/* Lumière de studio claire : reflets blancs sur le métal, ombres douces */}
       <ambientLight intensity={0.7} />
