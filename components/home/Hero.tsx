@@ -18,6 +18,8 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState<{ index: number; key: number } | null>(null);
   const [ready, setReady] = useState(false);
+  const [openKey, setOpenKey] = useState(0);
+  const [opening, setOpening] = useState(false);
   const [inView, setInView] = useState(false);
   const [seen, setSeen] = useState(false);
   const mobile = useMedia("(max-width: 767px)");
@@ -96,6 +98,7 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
 
   function select(next: number) {
     if (next === index) return;
+    setOpening(false);
     setLeaving((previous) => ({ index, key: (previous?.key ?? 0) + 1 }));
     setIndex(next);
   }
@@ -142,12 +145,34 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
               mobile={mobile}
               running={inView}
               onReady={() => setReady(true)}
+              openKey={openKey}
             />
           )}
         </div>
 
         {hydrated && old && <HeroFruits key={`front-${leaving!.key}`} hero={heroFor(old)} seed={leaving!.index} layer="front" mobile={mobile} leaving />}
         {hydrated && <HeroFruits key={`front-${flavor.id}`} hero={hero} seed={index} layer="front" mobile={mobile} />}
+
+        {/* Ouvrir la canette : anneau, pschitt et gerbe de liquide */}
+        {webgl && ready && (
+          <button
+            type="button"
+            disabled={opening}
+            onClick={() => {
+              setOpenKey((k) => k + 1);
+              setOpening(true);
+              setTimeout(() => setOpening(false), 2800);
+            }}
+            className="absolute right-[2%] bottom-[6%] z-10 flex items-center gap-2 rounded-full bg-white/80 px-5 py-3 font-serif text-base shadow-[0_10px_30px_-12px_rgb(0_0_0/0.35)] backdrop-blur transition hover:-translate-y-0.5 hover:bg-white disabled:opacity-60 md:top-1/2 md:right-[-2%] md:bottom-auto md:-translate-y-1/2 md:hover:-translate-y-[calc(50%+2px)]"
+            style={{ color: "var(--hero-ink)" }}
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M7 5h10M7 5c0-1 .8-2 2-2h6c1.2 0 2 1 2 2v14c0 1-.8 2-2 2H9c-1.2 0-2-1-2-2V5Z" />
+              <path d="M10 3.5c.5-1 1.5-1.5 2.5-1" />
+            </svg>
+            {opening ? "Pschitt !" : "Ouvrir"}
+          </button>
+        )}
       </div>
 
       {/* Nom, slogan et bouton */}
