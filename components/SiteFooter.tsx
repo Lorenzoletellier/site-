@@ -13,16 +13,16 @@ export default function SiteFooter() {
         <div>
           <p className="text-xs font-semibold tracking-[0.2em] text-cream/40 uppercase">Le site</p>
           <ul className="mt-4 space-y-2 font-medium">
-            <li><Link href="/saveurs" className="hover:text-sun">Nos saveurs</Link></li>
-            <li><Link href="/notre-histoire" className="hover:text-sun">Notre histoire</Link></li>
-            <li><Link href="/contact" className="hover:text-sun">Contact</Link></li>
-            <li><Link href="/compte" className="hover:text-sun">Mon compte</Link></li>
+            <li><Link href="/saveurs" className="hover:text-citron">Nos saveurs</Link></li>
+            <li><Link href="/notre-histoire" className="hover:text-citron">Notre histoire</Link></li>
+            <li><Link href="/contact" className="hover:text-citron">Contact</Link></li>
+            <li><Link href="/compte" className="hover:text-citron">Mon compte</Link></li>
           </ul>
         </div>
         <div>
           <p className="text-xs font-semibold tracking-[0.2em] text-cream/40 uppercase">Restons en contact</p>
           <p className="mt-4 text-cream/60">Nouvelles saveurs et éditions limitées en avant-première.</p>
-          <Link href="/contact" className="mt-4 inline-block rounded-full bg-sun px-5 py-2.5 text-sm font-semibold text-ink transition hover:scale-105">
+          <Link href="/contact" className="btn btn-citron mt-4 px-5 py-2.5 text-sm">
             S&apos;inscrire à la newsletter
           </Link>
         </div>

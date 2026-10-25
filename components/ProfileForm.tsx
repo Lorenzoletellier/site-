@@ -12,7 +12,7 @@ export default function ProfileForm({ fullName }: { fullName: string }) {
         Prénom et nom
         <input name="full_name" defaultValue={fullName} required maxLength={100} className="field font-normal" />
       </label>
-      <button disabled={pending} className="self-start rounded-full border-2 border-ink px-5 py-2 text-sm font-semibold transition hover:bg-ink hover:text-cream disabled:opacity-50">
+      <button disabled={pending} className="btn btn-ghost self-start px-5 py-2 text-sm">
         {pending ? "Enregistrement…" : "Enregistrer"}
       </button>
       <p aria-live="polite" className="min-h-5 text-sm">

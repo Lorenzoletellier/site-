@@ -59,10 +59,10 @@ export default function Shop({ flavors, cart, isLoggedIn }: Props) {
                 onClick={() => setFilter(fam.id)}
                 aria-pressed={active}
                 className={`rounded-full px-5 py-2.5 text-sm font-semibold transition ${
-                  active ? "bg-ink text-cream" : "bg-white text-ink ring-1 ring-ink/10 hover:ring-ink/40"
+                  active ? "bg-electric text-cream ring-2 ring-ink" : "bg-white text-ink ring-1 ring-ink/10 hover:ring-ink/40"
                 }`}
               >
-                {fam.label} <span className={active ? "text-cream/60" : "text-ink/40"}>{n}</span>
+                {fam.label} <span className={active ? "text-cream/70" : "text-ink/40"}>{n}</span>
               </button>
             );
           })}
@@ -93,7 +93,7 @@ export default function Shop({ flavors, cart, isLoggedIn }: Props) {
                     className="can-hover h-full drop-shadow-xl"
                   />
                   {soldOut ? (
-                    <span className="absolute top-0 left-0 rounded-full bg-ink px-3 py-1 text-xs font-semibold text-cream">Épuisée</span>
+                    <span className="absolute top-0 left-0 rounded-full bg-electric px-3 py-1 text-xs font-semibold text-cream">Épuisée</span>
                   ) : f.stock <= LOW_STOCK ? (
                     <span className="absolute top-0 left-0 rounded-full bg-white px-3 py-1 text-xs font-semibold">Plus que {f.stock}</span>
                   ) : null}
@@ -121,14 +121,14 @@ export default function Shop({ flavors, cart, isLoggedIn }: Props) {
                 <div className="mt-6 flex gap-3">
                   <button
                     onClick={() => setSelected(f)}
-                    className="rounded-full px-5 py-3 font-semibold ring-1 ring-ink/15 transition hover:ring-ink/50"
+                    className="btn btn-ghost px-5 py-3"
                   >
                     Fiche
                   </button>
                   <button
                     onClick={() => add(f)}
                     disabled={soldOut || pendingId === f.id}
-                    className="flex-1 rounded-full py-3 font-semibold transition hover:opacity-90 active:scale-95 disabled:opacity-50"
+                    className="btn flex-1 py-3"
                     style={{ backgroundColor: f.color, color: f.accent }}
                   >
                     {soldOut ? "Épuisée" : pendingId === f.id ? "Ajout…" : inCart ? `Ajouter (${inCart} au panier)` : "Ajouter au panier"}

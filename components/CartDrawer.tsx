@@ -44,7 +44,7 @@ export default function CartDrawer({ lines, subtotalCents, isLoggedIn, onClose }
         {!isLoggedIn ? (
           <div className="mt-10">
             <p className="text-ink/60">Connecte-toi pour remplir ton panier : il est sauvegardé sur ton compte.</p>
-            <Link href="/connexion?next=/saveurs" onClick={onClose} className="mt-6 inline-block rounded-full bg-ink px-6 py-3 font-semibold text-cream transition hover:scale-105">
+            <Link href="/connexion?next=/saveurs" onClick={onClose} className="mt-6 inline-block btn btn-primary px-6 py-3">
               Se connecter
             </Link>
           </div>

@@ -36,7 +36,7 @@ export default async function AdminProductsPage() {
                   <label htmlFor={`stock-${p.id}`} className="text-xs font-semibold">Stock</label>
                   <input id={`stock-${p.id}`} name="stock" type="number" min={0} defaultValue={p.stock}
                     className={`w-20 rounded-full border border-ink/20 bg-white px-3 py-1 text-sm tabular-nums ${p.stock <= LOW_STOCK ? "font-bold" : ""}`} />
-                  <button className="rounded-full bg-ink px-3 py-1 text-xs font-semibold text-cream">OK</button>
+                  <button className="rounded-full bg-electric px-3 py-1 text-xs font-semibold text-cream">OK</button>
                 </form>
                 <form action={toggleProductActive}>
                   <input type="hidden" name="product_id" value={p.id} />

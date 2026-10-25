@@ -1,16 +1,22 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fffaf0;
-  --foreground: #1a1a1a;
+  --background: #fff4e3;
+  --foreground: #0c0c14;
 }
 
+/* Palette Pétille : bleu électrique (couleur principale), vert citron, orange corail,
+   rose framboise, crème chaud et noir profond. Les saveurs gardent leur couleur d'accent. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-ink: #1a1a1a;
-  --color-cream: #fffaf0;
-  --color-sun: #ffd84d;
+  --color-electric: #1c2fe8;
+  --color-electric-deep: #0f1a96;
+  --color-citron: #c8f031;
+  --color-corail: #ff6b4a;
+  --color-framboise: #d9195f;
+  --color-cream: #fff4e3;
+  --color-ink: #0c0c14;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-display: var(--font-bricolage);
@@ -28,13 +34,37 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid #1a1a1a;
-  outline-offset: 2px;
+  outline: 3px solid var(--color-electric);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--color-citron);
+  color: var(--color-ink);
 }
 
 /* Champs de formulaire du site Pétille */
 @utility field {
-  @apply w-full rounded-2xl border-2 border-ink/20 bg-white px-4 py-3 outline-none focus:border-ink;
+  @apply w-full rounded-2xl border-2 border-ink/20 bg-white px-4 py-3 outline-none focus:border-electric;
+}
+
+/* Boutons « sticker » : bord encre et ombre décalée qui se creuse au survol et s'écrase au clic */
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-ink font-semibold;
+  box-shadow: 4px 4px 0 var(--color-ink);
+  transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 180ms ease, background-color 200ms ease;
+  &:hover:not(:disabled) { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--color-ink); }
+  &:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--color-ink); }
+  &:disabled { opacity: 0.45; cursor: not-allowed; }
+}
+@utility btn-primary {
+  @apply bg-electric text-cream;
+}
+@utility btn-citron {
+  @apply bg-citron text-ink;
+}
+@utility btn-ghost {
+  @apply bg-cream text-ink;
 }
 
 @keyframes float {
@@ -70,10 +100,10 @@ body {
 }
 
 /* Hero de l'accueil : couleurs de la saveur active, animées entre deux saveurs */
-@property --hero-a { syntax: "<color>"; inherits: true; initial-value: #fffaf0; }
-@property --hero-b { syntax: "<color>"; inherits: true; initial-value: #fffaf0; }
-@property --hero-ink { syntax: "<color>"; inherits: true; initial-value: #1a1a1a; }
-@property --hero-button { syntax: "<color>"; inherits: true; initial-value: #ffd84d; }
+@property --hero-a { syntax: "<color>"; inherits: true; initial-value: #fff4e3; }
+@property --hero-b { syntax: "<color>"; inherits: true; initial-value: #fff4e3; }
+@property --hero-ink { syntax: "<color>"; inherits: true; initial-value: #0c0c14; }
+@property --hero-button { syntax: "<color>"; inherits: true; initial-value: #c8f031; }
 :root { transition: --hero-a 800ms ease, --hero-b 800ms ease, --hero-ink 800ms ease, --hero-button 800ms ease; }
 
 .hero-bg { background: radial-gradient(70% 60% at 50% 30%, var(--hero-b), var(--hero-a) 75%); }
@@ -107,6 +137,7 @@ body {
 @keyframes fade-out { to { opacity: 0; } }
 
 @media (prefers-reduced-motion: reduce) {
+  .btn, .btn:hover, .btn:active { transform: none !important; transition: none; }
   .float, .float-slow, .marquee, .badge-pop, .group:hover .can-hover, .group:focus-within .can-hover, .hero-float { animation: none; }
   .fruit-in, .hero-title-in { animation-name: fade; animation-duration: 400ms; }
   .fruit-out { animation-name: fade-out; animation-duration: 300ms; }

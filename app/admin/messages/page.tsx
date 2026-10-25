@@ -41,7 +41,7 @@ export default async function AdminMessagesPage() {
                 {!c.is_handled && (
                   <form action={markContactHandled} className="mt-4">
                     <input type="hidden" name="id" value={c.id} />
-                    <button className="rounded-full bg-ink px-4 py-2 text-xs font-semibold text-cream">Marquer comme traité</button>
+                    <button className="rounded-full bg-electric px-4 py-2 text-xs font-semibold text-cream">Marquer comme traité</button>
                   </form>
                 )}
               </li>

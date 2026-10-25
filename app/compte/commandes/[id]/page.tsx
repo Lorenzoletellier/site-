@@ -27,7 +27,7 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/co
   return (
     <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
       {confirmee && (
-        <div role="status" className="mb-10 rounded-3xl bg-sun p-8">
+        <div role="status" className="mb-10 rounded-3xl bg-citron p-8">
           <p className="font-display text-3xl font-extrabold">Pschitt ! Commande confirmée.</p>
           <p className="mt-2 text-ink/80">Tes canettes partent sous 48 h. Tu pourras ensuite noter chaque saveur depuis sa fiche.</p>
         </div>

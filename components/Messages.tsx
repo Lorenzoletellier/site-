@@ -77,7 +77,7 @@ export default function Messages() {
               <button
                 type="submit"
                 disabled={sending || !text.trim()}
-                className="rounded-full bg-ink px-6 py-3 font-semibold text-cream transition hover:scale-105 disabled:opacity-40 disabled:hover:scale-100"
+                className="btn btn-primary px-6 py-3"
               >
                 {sending ? "Envoi…" : "Publier"}
               </button>

@@ -43,7 +43,7 @@ export default function CheckoutForm({ lines, subtotalCents, defaultName }: { li
           </label>
         </div>
         <input type="hidden" name="coupon" value={couponState.percent ? coupon : ""} />
-        <div className="rounded-3xl bg-sun/40 p-5 text-sm">
+        <div className="rounded-3xl bg-citron/30 p-5 text-sm">
           <p className="font-semibold">Paiement simulé</p>
           <p className="text-ink/70">Projet étudiant : aucun paiement réel, la commande est enregistrée comme payée.</p>
         </div>
@@ -66,7 +66,7 @@ export default function CheckoutForm({ lines, subtotalCents, defaultName }: { li
           <label htmlFor="coupon" className="sr-only">Code promo</label>
           <input id="coupon" name="coupon" value={coupon} onChange={(e) => setCoupon(e.target.value.toUpperCase())}
             placeholder="Code promo" className="field py-2 uppercase" />
-          <button disabled={checking || !coupon} className="rounded-full border-2 border-ink px-4 text-sm font-semibold transition hover:bg-ink hover:text-cream disabled:opacity-40">
+          <button disabled={checking || !coupon} className="btn btn-ghost px-4 text-sm">
             {checking ? "…" : "OK"}
           </button>
         </form>
@@ -80,7 +80,7 @@ export default function CheckoutForm({ lines, subtotalCents, defaultName }: { li
           <div className="flex justify-between"><dt>Livraison</dt><dd>{shipping === 0 ? "Offerte" : euros(shipping)}</dd></div>
           <div className="flex justify-between pt-2 text-lg font-bold"><dt>Total</dt><dd>{euros(total)}</dd></div>
         </dl>
-        <button form="checkout" disabled={ordering} className="mt-4 w-full rounded-full bg-ink py-4 font-semibold text-cream transition hover:scale-[1.02] disabled:opacity-50">
+        <button form="checkout" disabled={ordering} className="btn btn-primary mt-4 w-full py-4">
           {ordering ? "Validation…" : `Payer ${euros(total)}`}
         </button>
       </aside>

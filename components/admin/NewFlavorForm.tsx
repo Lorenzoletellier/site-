@@ -88,7 +88,7 @@ export default function NewFlavorForm({ categories }: { categories: { id: number
           </label>
         </fieldset>
         <div className="flex flex-wrap items-center gap-4 sm:col-span-2">
-          <button disabled={pending} className="rounded-full bg-ink px-7 py-3 font-semibold text-cream transition hover:scale-105 disabled:opacity-50">
+          <button disabled={pending} className="btn btn-primary px-7 py-3">
             {pending ? "Création…" : "Ajouter à la gamme"}
           </button>
           <p aria-live="polite" className={`text-sm font-semibold ${state.error ? "text-red-700" : "text-ink/70"}`}>

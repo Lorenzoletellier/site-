@@ -8,9 +8,9 @@ import { formatPrice } from "@/lib/flavors";
 
 
 const reasons = [
-  { Icon: DropIcon, title: "Deux fois moins sucré", text: "4 g de sucre pour 100 ml en moyenne, contre 10 g dans un soda classique." },
-  { Icon: LeafIcon, title: "De vrais fruits bio", text: "Des fruits pressés et des plantes infusées, sans arôme artificiel ni colorant." },
-  { Icon: RecycleIcon, title: "Une canette qui revient", text: "L'aluminium se recycle à l'infini. Trie-la, elle redevient une canette." },
+  { Icon: DropIcon, tint: "bg-citron", title: "Deux fois moins sucré", text: "4 g de sucre pour 100 ml en moyenne, contre 10 g dans un soda classique." },
+  { Icon: LeafIcon, tint: "bg-corail", title: "De vrais fruits bio", text: "Des fruits pressés et des plantes infusées, sans arôme artificiel ni colorant." },
+  { Icon: RecycleIcon, tint: "bg-framboise text-cream", title: "Une canette qui revient", text: "L'aluminium se recycle à l'infini. Trie-la, elle redevient une canette." },
 ];
 
 export default async function Home() {
@@ -26,7 +26,7 @@ export default async function Home() {
       {/* Hero : une saveur à la fois, canette 3D et explosion de fruits */}
       <Hero flavors={flavors} />
 
-      <div className="overflow-hidden border-y-2 border-ink bg-ink py-3 text-cream">
+      <div className="overflow-hidden border-y-2 border-ink bg-citron py-3 text-ink">
         <div className="marquee flex w-max gap-10 font-display text-xl font-bold whitespace-nowrap">
           {Array.from({ length: 2 }).flatMap((_, k) =>
             ["BIO", "PEU SUCRÉ", "VRAIS FRUITS", "FABRIQUÉ EN FRANCE", "100 % RECYCLABLE", "SANS ARÔMES ARTIFICIELS"].map((t) => (
@@ -43,9 +43,9 @@ export default async function Home() {
           Tout le plaisir d&apos;un soda, sans ce qu&apos;on n&apos;aime pas.
         </h2>
         <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {reasons.map(({ Icon, title, text }) => (
-            <div key={title} className="rounded-3xl bg-white p-8 shadow-[0_1px_0_rgba(0,0,0,0.04)] ring-1 ring-ink/5">
-              <span className="grid h-14 w-14 place-items-center rounded-2xl bg-sun">
+          {reasons.map(({ Icon, tint, title, text }) => (
+            <div key={title} className="rounded-3xl border-2 border-ink bg-white p-8 shadow-[6px_6px_0_var(--color-ink)]">
+              <span className={`grid h-14 w-14 rotate-[-6deg] place-items-center rounded-2xl border-2 border-ink ${tint}`}>
                 <Icon className="h-7 w-7" />
               </span>
               <h3 className="font-display mt-6 text-2xl font-bold">{title}</h3>
@@ -56,7 +56,7 @@ export default async function Home() {
       </section>
 
       {/* Les plus aimées */}
-      <section className="bg-sun/30">
+      <section className="bg-corail/20">
         <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
@@ -92,17 +92,17 @@ export default async function Home() {
 
       {/* Teaser histoire */}
       <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
-        <div className="grid items-center gap-10 overflow-hidden rounded-[2.5rem] bg-ink p-8 text-cream sm:p-14 md:grid-cols-2">
+        <div className="grid items-center gap-10 overflow-hidden rounded-[2.5rem] border-2 border-ink bg-electric p-8 text-cream shadow-[8px_8px_0_var(--color-ink)] sm:p-14 md:grid-cols-2">
           <div>
-            <p className="text-sm font-semibold tracking-[0.2em] text-cream/50 uppercase">Depuis 2019</p>
+            <p className="text-sm font-semibold tracking-[0.2em] text-citron uppercase">Depuis 2019</p>
             <h2 className="font-display mt-2 text-4xl font-extrabold sm:text-5xl">Né dans une cuisine, pas dans un labo.</h2>
-            <p className="mt-4 max-w-md text-cream/70">
+            <p className="mt-4 max-w-md text-cream/85">
               Un voyage au Japon, 47 essais dans une casserole et un premier stand au marché : découvre comment est né
               Pétille.
             </p>
             <Link
               href="/notre-histoire"
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-sun px-7 py-4 font-semibold text-ink transition hover:scale-105"
+              className="mt-8 inline-flex items-center gap-2 btn btn-citron px-7 py-4"
             >
               Lire notre histoire <ArrowIcon className="h-5 w-5" />
             </Link>
@@ -130,7 +130,7 @@ export default async function Home() {
         <p className="mt-4 text-ink/70">Commande pour un événement, revendeur ou simple curiosité : on répond sous 48 heures.</p>
         <Link
           href="/contact"
-          className="mt-8 inline-block rounded-full border-2 border-ink px-7 py-4 font-semibold transition hover:bg-ink hover:text-cream"
+          className="mt-8 inline-block btn btn-ghost px-7 py-4"
         >
           Nous écrire
         </Link>

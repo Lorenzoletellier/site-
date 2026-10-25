@@ -15,13 +15,13 @@ const faq = [
 export default function ContactPage() {
   return (
     <>
-      <div className="bg-sun">
+      <div className="bg-electric text-cream">
         <div className="mx-auto max-w-6xl px-4 pt-8 pb-20 sm:px-6">
-          <p className="text-sm font-semibold tracking-[0.2em] text-ink/60 uppercase">Contact</p>
+          <p className="text-sm font-semibold tracking-[0.2em] text-citron uppercase">Contact</p>
           <h1 className="font-display mt-2 max-w-2xl text-5xl leading-[0.95] font-extrabold sm:text-6xl">
             Une question ? Une envie de bulles ?
           </h1>
-          <p className="mt-6 max-w-xl text-lg text-ink/80">
+          <p className="mt-6 max-w-xl text-lg text-cream/85">
             On répond à tous les messages, en général sous 48 heures.
           </p>
         </div>

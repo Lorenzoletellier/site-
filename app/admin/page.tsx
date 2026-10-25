@@ -38,7 +38,7 @@ export default async function AdminDashboard() {
         <h1 className="font-display mt-2 text-4xl font-extrabold">Ça pétille ?</h1>
         <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
           {tiles.map((tile, i) => (
-            <div key={tile.label} className={`rounded-3xl p-6 ${i === 0 ? "bg-sun" : "bg-white ring-1 ring-ink/5"}`}>
+            <div key={tile.label} className={`rounded-3xl p-6 ${i === 0 ? "bg-electric text-cream" : "bg-white ring-1 ring-ink/5"}`}>
               <p className="text-xs font-semibold tracking-[0.2em] text-ink/60 uppercase">{tile.label}</p>
               <p className="font-display mt-3 text-3xl font-extrabold tabular-nums">{tile.value}</p>
               <p className="mt-1 text-xs text-ink/60">{tile.hint}</p>
@@ -94,13 +94,13 @@ export default async function AdminDashboard() {
         <p className="text-sm font-semibold tracking-[0.2em] text-ink/60 uppercase">Actions</p>
         <h2 className="font-display mt-2 text-4xl font-extrabold">À traiter.</h2>
         <div className="mt-8 grid gap-4 md:grid-cols-3">
-          <Link href="/admin/commandes?statut=paid" className="flex flex-col justify-between rounded-3xl bg-sun p-6 transition hover:-translate-y-1">
+          <Link href="/admin/commandes?statut=paid" className="flex flex-col justify-between rounded-3xl bg-citron p-6 transition hover:-translate-y-1">
             <p className="font-semibold">Commandes à expédier</p>
             <p className="font-display mt-6 text-6xl font-extrabold">{toShip.count ?? 0}</p>
           </Link>
           <Link href="/admin/messages" className="flex flex-col justify-between rounded-3xl bg-ink p-6 text-cream transition hover:-translate-y-1">
             <p className="font-semibold">Messages de contact non traités</p>
-            <p className="font-display mt-6 text-6xl font-extrabold text-sun">{kpi?.open_contacts ?? 0}</p>
+            <p className="font-display mt-6 text-6xl font-extrabold text-citron">{kpi?.open_contacts ?? 0}</p>
             <p className="mt-2 text-xs text-cream/60">{kpi?.newsletter_count ?? 0} inscrits à la newsletter</p>
           </Link>
           <div className="rounded-3xl bg-white p-6 ring-1 ring-ink/5">

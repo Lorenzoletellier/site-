@@ -22,7 +22,7 @@ export default async function AdminOrdersPage({ searchParams }: PageProps<"/admi
   const { data: orders } = await query;
 
   const chip = (active: boolean) =>
-    `rounded-full px-5 py-2.5 text-sm font-semibold transition ${active ? "bg-ink text-cream" : "bg-white ring-1 ring-ink/10 hover:ring-ink/40"}`;
+    `rounded-full px-5 py-2.5 text-sm font-semibold transition ${active ? "bg-electric text-cream ring-2 ring-ink" : "bg-white ring-1 ring-ink/10 hover:ring-ink/40"}`;
 
   return (
     <div>
@@ -60,7 +60,7 @@ export default async function AdminOrdersPage({ searchParams }: PageProps<"/admi
                       <select id={`status-${order.id}`} name="status" defaultValue={order.status} className="rounded-full border border-ink/20 bg-white px-3 py-1.5">
                         {Constants.public.Enums.order_status.map((s) => <option key={s} value={s}>{ORDER_STATUS_LABELS[s]}</option>)}
                       </select>
-                      <button className="rounded-full bg-ink px-3 py-1.5 text-xs font-semibold text-cream">OK</button>
+                      <button className="rounded-full bg-electric px-3 py-1.5 text-xs font-semibold text-cream">OK</button>
                     </form>
                   </td>
                 </tr>

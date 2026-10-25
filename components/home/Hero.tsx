@@ -7,6 +7,7 @@ import Can from "@/components/Can";
 import HeroFruits from "./HeroFruits";
 import { HERO_SLUGS, heroFor, heroTitle } from "@/lib/flavor-hero";
 import type { Flavor } from "@/lib/flavors";
+import { hasWebGL } from "@/lib/webgl";
 
 // La 3D n'est chargée que dans le navigateur
 const HeroCan = dynamic(() => import("./HeroCan"), { ssr: false });
@@ -26,6 +27,7 @@ function useMedia(query: string) {
 const noop = () => () => {};
 // Faux côté serveur, vrai une fois dans le navigateur : les fruits jaillissent à l'arrivée
 const useHydrated = () => useSyncExternalStore(noop, () => true, () => false);
+const useWebGL = () => useSyncExternalStore(noop, hasWebGL, () => false);
 
 const TRANSITION_MS = 800;
 
@@ -37,6 +39,7 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
   const mobile = useMedia("(max-width: 767px)");
   const reducedMotion = useMedia("(prefers-reduced-motion: reduce)");
   const hydrated = useHydrated();
+  const webgl = useWebGL();
   const section = useRef<HTMLElement>(null);
   const target = useRef({ x: 0, y: 0 });
   const pointer = useRef({ x: 0, y: 0 });
@@ -139,15 +142,17 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
           <div className={`absolute inset-0 grid place-items-center transition-opacity duration-500 ${ready ? "opacity-0" : "opacity-100"}`} aria-hidden>
             <Can {...flavor} className="h-[62%] rotate-[20deg] drop-shadow-2xl" />
           </div>
-          <HeroCan
-            flavor={flavor}
-            preload={preload}
-            pointer={pointer}
-            reducedMotion={reducedMotion}
-            mobile={mobile}
-            running={inView}
-            onReady={() => setReady(true)}
-          />
+          {webgl && (
+            <HeroCan
+              flavor={flavor}
+              preload={preload}
+              pointer={pointer}
+              reducedMotion={reducedMotion}
+              mobile={mobile}
+              running={inView}
+              onReady={() => setReady(true)}
+            />
+          )}
         </div>
 
         {hydrated && old && <HeroFruits key={`front-${leaving!.key}`} hero={heroFor(old)} seed={leaving!.index} layer="front" mobile={mobile} leaving />}

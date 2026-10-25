@@ -32,7 +32,7 @@ export default async function AccountPage() {
           {!orders?.length ? (
             <div className="mt-6 rounded-3xl bg-white p-8 ring-1 ring-ink/5">
               <p className="text-ink/60">Aucune commande pour l&apos;instant.</p>
-              <Link href="/saveurs" className="mt-4 inline-block rounded-full bg-ink px-6 py-3 font-semibold text-cream transition hover:scale-105">
+              <Link href="/saveurs" className="mt-4 inline-block btn btn-primary px-6 py-3">
                 Découvrir les saveurs
               </Link>
             </div>

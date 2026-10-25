@@ -152,7 +152,7 @@ export default function ProductModal({ flavor, isLoggedIn, onClose, onAdd }: Pro
                 <label htmlFor="review-comment" className="sr-only">Ton avis</label>
                 <textarea id="review-comment" rows={2} maxLength={500} value={comment} onChange={(e) => setComment(e.target.value)}
                   placeholder="Ce que tu en as pensé" className="field text-sm" />
-                <button disabled={!rating} className="rounded-full bg-ink px-5 py-2 text-sm font-semibold text-cream disabled:opacity-40">
+                <button disabled={!rating} className="btn btn-primary px-5 py-2 text-sm">
                   Publier
                 </button>
               </form>

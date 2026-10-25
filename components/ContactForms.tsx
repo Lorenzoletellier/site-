@@ -37,7 +37,7 @@ export function ContactForm() {
         <textarea name="message" required rows={6} maxLength={2000} className={input} />
       </label>
       <div className="flex flex-wrap items-center gap-4">
-        <button disabled={pending} className="self-start rounded-full bg-ink px-8 py-4 font-semibold text-cream transition hover:scale-105 disabled:opacity-50">
+        <button disabled={pending} className="self-start btn btn-primary px-8 py-4">
           {pending ? "Envoi…" : "Envoyer"}
         </button>
         <p aria-live="polite" className={`text-sm font-semibold ${state.error ? "text-red-700" : "text-ink/70"}`}>
@@ -60,12 +60,12 @@ export function NewsletterForm() {
         type="email"
         required
         placeholder="ton@email.fr"
-        className="rounded-full border-2 border-cream/20 bg-transparent px-5 py-3 outline-none focus:border-sun"
+        className="rounded-full border-2 border-cream/20 bg-transparent px-5 py-3 outline-none focus:border-citron"
       />
-      <button disabled={pending} className="rounded-full bg-sun px-6 py-3 font-semibold text-ink disabled:opacity-60">
+      <button disabled={pending} className="btn btn-citron px-6 py-3">
         {pending ? "Inscription…" : "S'inscrire"}
       </button>
-      <p aria-live="polite" className={`min-h-5 text-sm ${state.error ? "text-red-300" : "text-sun"}`}>
+      <p aria-live="polite" className={`min-h-5 text-sm ${state.error ? "text-corail" : "text-citron"}`}>
         {state.error ?? state.success}
       </p>
     </form>

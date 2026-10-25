@@ -75,20 +75,20 @@ export default async function NotreHistoirePage() {
   return (
     <>
       {/* Intro */}
-      <section className="bg-sun">
+      <section className="bg-electric text-cream">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 pt-8 pb-24 sm:px-6 md:grid-cols-2">
           <div>
-            <p className="text-sm font-semibold tracking-[0.2em] text-ink/60 uppercase">Notre histoire</p>
+            <p className="text-sm font-semibold tracking-[0.2em] text-citron uppercase">Notre histoire</p>
             <h1 className="font-display mt-2 text-5xl leading-[0.95] font-extrabold sm:text-7xl">
               Né dans une cuisine, pas dans un labo.
             </h1>
-            <p className="mt-6 max-w-md text-lg text-ink/80">
+            <p className="mt-6 max-w-md text-lg text-cream/85">
               Pétille, c&apos;est l&apos;histoire de deux amis, Romain et Lorenzo, qui trouvaient les sodas trop sucrés et pas assez
               savoureux. Alors ils ont fait les leurs, une casserole à la fois.
             </p>
           </div>
           <div className="relative flex h-80 items-end justify-center sm:h-96">
-            <span className="absolute top-1/2 left-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/40 blur-2xl" />
+            <span className="absolute top-1/2 left-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-citron/40 blur-3xl" />
             <Can {...pick("citron-yuzu")} className="float relative h-72 drop-shadow-2xl sm:h-96" />
           </div>
         </div>
@@ -136,14 +136,14 @@ export default async function NotreHistoirePage() {
       </section>
 
       {/* Fabrication */}
-      <section className="bg-sun/40">
+      <section className="bg-citron">
         <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
           <p className="text-sm font-semibold tracking-[0.2em] text-ink/60 uppercase">Notre méthode</p>
           <h2 className="font-display mt-2 text-4xl font-extrabold sm:text-5xl">Comment naît une canette.</h2>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {steps.map(([n, title, text]) => (
-              <div key={n} className="rounded-3xl bg-cream p-6">
-                <p className="font-display text-4xl font-extrabold text-ink/20">{n}</p>
+              <div key={n} className="rounded-3xl border-2 border-ink bg-cream p-6 shadow-[5px_5px_0_var(--color-ink)]">
+                <p className="font-display text-4xl font-extrabold text-electric">{n}</p>
                 <h3 className="font-display mt-4 text-xl font-bold">{title}</h3>
                 <p className="mt-2 text-ink/70">{text}</p>
               </div>
@@ -161,7 +161,7 @@ export default async function NotreHistoirePage() {
           </div>
           {stats.map(([stat, text]) => (
             <div key={stat} className="border-t border-cream/20 pt-6">
-              <p className="font-display text-6xl font-extrabold text-sun">{stat}</p>
+              <p className="font-display text-6xl font-extrabold text-citron">{stat}</p>
               <p className="mt-4 text-cream/80">{text}</p>
             </div>
           ))}
@@ -173,10 +173,10 @@ export default async function NotreHistoirePage() {
         <h2 className="font-display text-4xl font-extrabold sm:text-5xl">La suite s&apos;écrit avec toi.</h2>
         <p className="mt-4 text-ink/70">Goûte nos neuf recettes et dis-nous laquelle doit devenir la dixième.</p>
         <div className="mt-8 flex flex-wrap justify-center gap-4">
-          <Link href="/saveurs" className="rounded-full bg-ink px-7 py-4 font-semibold text-cream transition hover:scale-105">
+          <Link href="/saveurs" className="btn btn-primary px-7 py-4">
             Découvrir les saveurs
           </Link>
-          <Link href="/contact" className="rounded-full border-2 border-ink px-7 py-4 font-semibold transition hover:bg-ink hover:text-cream">
+          <Link href="/contact" className="btn btn-ghost px-7 py-4">
             Nous écrire
           </Link>
         </div>
