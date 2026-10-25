@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Can from "./Can";
+import Can3D from "./Can3D";
 import { formatPrice, type Flavor } from "@/lib/flavors";
 import { createClient } from "@/lib/supabase/client";
 import { submitReview } from "@/lib/shop-actions";
@@ -85,19 +85,13 @@ export default function ProductModal({ flavor, isLoggedIn, onClose, onAdd }: Pro
           className="flex items-center justify-center p-8"
           style={{ backgroundColor: `${flavor.color}33` }}
         >
-          <Can
-            name={flavor.name}
-            color={flavor.color}
-            accent={flavor.accent}
-            secondary={flavor.secondary}
-            pattern={flavor.pattern}
-            className="float h-64 drop-shadow-2xl md:h-80"
-          />
+          <Can3D flavor={flavor} className="h-72 w-full md:h-[30rem]" />
         </div>
 
         <div className="p-6 sm:p-8">
           <p className="text-sm font-semibold tracking-[0.2em] text-ink/60 uppercase">{flavor.tagline}</p>
           <h2 className="font-display mt-1 text-4xl font-extrabold">{flavor.name}</h2>
+          <p className="mt-3 text-lg font-medium">{flavor.description}</p>
           <p className="mt-4 text-ink/80">{flavor.story}</p>
 
           <h3 className="mt-6 font-semibold">Ingrédients</h3>

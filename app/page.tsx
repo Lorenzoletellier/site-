@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Can from "@/components/Can";
+import HomeScene from "@/components/home/HomeScene";
 import Messages from "@/components/Messages";
 import { ArrowIcon, DropIcon, LeafIcon, RecycleIcon } from "@/components/Icons";
 import { getFlavors } from "@/lib/queries";
@@ -17,60 +18,23 @@ export default async function Home() {
   const flavors = await getFlavors();
   const byId = Object.fromEntries(flavors.map((f) => [f.id, f]));
   const pick = (id: string, index: number) => byId[id] ?? flavors[index % flavors.length];
-  const [lemon, raspberry, peach] = [pick("citron-yuzu", 0), pick("framboise-basilic", 1), pick("peche-gingembre", 2)];
   const favorites = ["citron-yuzu", "framboise-basilic", "cola-vanille"].map((id, i) => pick(id, i));
 
   return (
     <>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-sun">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 pt-12 pb-20 sm:px-6 md:grid-cols-2 md:pt-16">
-          <div>
-            <p className="inline-block rounded-full bg-ink px-4 py-1 text-xs font-semibold tracking-widest text-cream uppercase">
-              Nouveau · Gamme 2026
-            </p>
-            <h1 className="font-display mt-6 text-5xl leading-[0.95] font-extrabold sm:text-7xl">
-              Des bulles qui ont du caractère.
-            </h1>
-            <p className="mt-6 max-w-md text-lg text-ink/80">
-              Pétille, ce sont neuf sodas artisanaux bio et peu sucrés, faits en France avec de vrais fruits. Ouvre,
-              écoute le <em>pschitt</em>, savoure.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link
-                href="/saveurs"
-                className="inline-flex items-center gap-2 rounded-full bg-ink px-7 py-4 font-semibold text-cream transition hover:scale-105"
-              >
-                Découvrir les saveurs <ArrowIcon className="h-5 w-5" />
-              </Link>
-              <Link
-                href="/notre-histoire"
-                className="rounded-full border-2 border-ink px-7 py-4 font-semibold transition hover:bg-ink hover:text-cream"
-              >
-                Notre histoire
-              </Link>
-            </div>
-          </div>
+      {/* Scène 3D des saveurs */}
+      <HomeScene flavors={flavors} />
 
-          <div className="relative flex h-72 items-end justify-center sm:h-[28rem]">
-            <span className="absolute top-1/2 left-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/40 blur-2xl" />
-            <Can {...raspberry} className="float-slow relative -mr-10 h-52 -rotate-12 drop-shadow-2xl sm:h-80" />
-            <Can {...lemon} className="float relative z-10 h-64 drop-shadow-2xl sm:h-96" />
-            <Can {...peach} className="float-slow relative -ml-10 h-52 rotate-12 drop-shadow-2xl sm:h-80" />
-          </div>
+      <div className="overflow-hidden border-y-2 border-ink bg-ink py-3 text-cream">
+        <div className="marquee flex w-max gap-10 font-display text-xl font-bold whitespace-nowrap">
+          {Array.from({ length: 2 }).flatMap((_, k) =>
+            ["BIO", "PEU SUCRÉ", "VRAIS FRUITS", "FABRIQUÉ EN FRANCE", "100 % RECYCLABLE", "SANS ARÔMES ARTIFICIELS"].map((t) => (
+              <span key={`${k}-${t}`}>✦ {t}</span>
+            )),
+          )}
         </div>
-
-        <div className="overflow-hidden border-y-2 border-ink bg-ink py-3 text-cream">
-          <div className="marquee flex w-max gap-10 font-display text-xl font-bold whitespace-nowrap">
-            {Array.from({ length: 2 }).flatMap((_, k) =>
-              ["BIO", "PEU SUCRÉ", "VRAIS FRUITS", "FABRIQUÉ EN FRANCE", "100 % RECYCLABLE", "SANS ARÔMES ARTIFICIELS"].map((t) => (
-                <span key={`${k}-${t}`}>✦ {t}</span>
-              )),
-            )}
-          </div>
-        </div>
-      </section>
+      </div>
 
       {/* Pourquoi Pétille */}
       <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6">

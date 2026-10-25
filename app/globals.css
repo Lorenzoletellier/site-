@@ -14,6 +14,7 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-display: var(--font-bricolage);
+  --font-hero: var(--font-archivo);
 }
 
 html {
@@ -52,11 +53,39 @@ body {
   100% { transform: scale(1); }
 }
 
+/* Boutique : au survol d'une fiche, la canette se soulève et se dandine */
+@keyframes can-wiggle {
+  0% { transform: translateY(0) rotate(0deg) scale(1); }
+  30% { transform: translateY(-14px) rotate(-8deg) scale(1.06); }
+  55% { transform: translateY(-12px) rotate(5deg) scale(1.06); }
+  80% { transform: translateY(-14px) rotate(-3deg) scale(1.06); }
+  100% { transform: translateY(-12px) rotate(-4deg) scale(1.06); }
+}
+
+.can-hover { transition: transform 400ms ease, filter 400ms ease; }
+.group:hover .can-hover,
+.group:focus-within .can-hover {
+  animation: can-wiggle 700ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  filter: drop-shadow(0 24px 18px rgb(0 0 0 / 0.25));
+}
+
+/* Scène d'accueil : arrivée du nom de la saveur et de la fiche produit */
+@keyframes name-in {
+  from { opacity: 0; transform: translateY(18px) skewX(-6deg); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+@keyframes panel-in {
+  from { opacity: 0; translate: 0 16px; }
+  to { opacity: 1; translate: 0 0; }
+}
+.name-in { animation: name-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.panel-in { animation: panel-in 500ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
 .float { animation: float 4s ease-in-out infinite; }
 .float-slow { animation: float 5.5s ease-in-out infinite 0.6s; }
 .marquee { animation: marquee 25s linear infinite; }
 .badge-pop { animation: badge-pop 450ms cubic-bezier(0.34, 1.56, 0.64, 1); }
 
 @media (prefers-reduced-motion: reduce) {
-  .float, .float-slow, .marquee, .badge-pop { animation: none; }
+  .float, .float-slow, .marquee, .badge-pop, .group:hover .can-hover, .group:focus-within .can-hover, .name-in, .panel-in { animation: none; }
 }

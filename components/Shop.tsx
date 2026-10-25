@@ -90,7 +90,7 @@ export default function Shop({ flavors, cart, isLoggedIn }: Props) {
                     accent={f.accent}
                     secondary={f.secondary}
                     pattern={f.pattern}
-                    className="h-full drop-shadow-xl transition duration-500 group-hover:-rotate-6 group-hover:scale-105"
+                    className="can-hover h-full drop-shadow-xl"
                   />
                   {soldOut ? (
                     <span className="absolute top-0 left-0 rounded-full bg-ink px-3 py-1 text-xs font-semibold text-cream">Épuisée</span>
