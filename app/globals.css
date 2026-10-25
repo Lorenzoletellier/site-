@@ -14,7 +14,7 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-display: var(--font-bricolage);
-  --font-hero: var(--font-archivo);
+  --font-serif: var(--font-fraunces);
 }
 
 html {
@@ -69,23 +69,45 @@ body {
   filter: drop-shadow(0 24px 18px rgb(0 0 0 / 0.25));
 }
 
-/* Scène d'accueil : arrivée du nom de la saveur et de la fiche produit */
-@keyframes name-in {
-  from { opacity: 0; transform: translateY(18px) skewX(-6deg); filter: blur(6px); }
-  to { opacity: 1; transform: none; filter: none; }
+/* Hero de l'accueil : couleurs de la saveur active, animées entre deux saveurs */
+@property --hero-a { syntax: "<color>"; inherits: true; initial-value: #fffaf0; }
+@property --hero-b { syntax: "<color>"; inherits: true; initial-value: #fffaf0; }
+@property --hero-ink { syntax: "<color>"; inherits: true; initial-value: #1a1a1a; }
+@property --hero-button { syntax: "<color>"; inherits: true; initial-value: #ffd84d; }
+:root { transition: --hero-a 800ms ease, --hero-b 800ms ease, --hero-ink 800ms ease, --hero-button 800ms ease; }
+
+.hero-bg { background: radial-gradient(70% 60% at 50% 30%, var(--hero-b), var(--hero-a) 75%); }
+@media (min-width: 768px) {
+  .hero-bg { background: radial-gradient(55% 75% at 64% 48%, var(--hero-b), var(--hero-a) 80%); }
 }
-@keyframes panel-in {
-  from { opacity: 0; translate: 0 16px; }
-  to { opacity: 1; translate: 0 0; }
+
+@keyframes hero-title-in {
+  from { opacity: 0; translate: 0 24px; filter: blur(8px); }
 }
-.name-in { animation: name-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both; }
-.panel-in { animation: panel-in 500ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes fruit-in {
+  from { opacity: 0; translate: var(--from-x) var(--from-y); scale: 0.25; rotate: var(--spin); }
+}
+@keyframes fruit-out {
+  to { opacity: 0; translate: var(--to-x) var(--to-y); scale: 1.25; rotate: var(--spin); }
+}
+@keyframes hero-float {
+  50% { translate: 0 -14px; rotate: 4deg; }
+}
+.hero-title-in { animation: hero-title-in 800ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.fruit-in { animation: fruit-in 900ms cubic-bezier(0.16, 1, 0.3, 1) var(--delay, 0ms) both; }
+.fruit-out { animation: fruit-out 700ms cubic-bezier(0.55, 0, 0.8, 0.3) forwards; pointer-events: none; }
+.hero-float { animation: hero-float var(--duration, 7s) ease-in-out var(--float-delay, 0s) infinite; }
 
 .float { animation: float 4s ease-in-out infinite; }
 .float-slow { animation: float 5.5s ease-in-out infinite 0.6s; }
 .marquee { animation: marquee 25s linear infinite; }
 .badge-pop { animation: badge-pop 450ms cubic-bezier(0.34, 1.56, 0.64, 1); }
 
+@keyframes fade { from { opacity: 0; } }
+@keyframes fade-out { to { opacity: 0; } }
+
 @media (prefers-reduced-motion: reduce) {
-  .float, .float-slow, .marquee, .badge-pop, .group:hover .can-hover, .group:focus-within .can-hover, .name-in, .panel-in { animation: none; }
+  .float, .float-slow, .marquee, .badge-pop, .group:hover .can-hover, .group:focus-within .can-hover, .hero-float { animation: none; }
+  .fruit-in, .hero-title-in { animation-name: fade; animation-duration: 400ms; }
+  .fruit-out { animation-name: fade-out; animation-duration: 300ms; }
 }

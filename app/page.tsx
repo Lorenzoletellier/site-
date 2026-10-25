@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Can from "@/components/Can";
-import HomeScene from "@/components/home/HomeScene";
+import Hero from "@/components/home/Hero";
 import Messages from "@/components/Messages";
 import { ArrowIcon, DropIcon, LeafIcon, RecycleIcon } from "@/components/Icons";
 import { getFlavors } from "@/lib/queries";
@@ -23,8 +23,8 @@ export default async function Home() {
   return (
     <>
 
-      {/* Scène 3D des saveurs */}
-      <HomeScene flavors={flavors} />
+      {/* Hero : une saveur à la fois, canette 3D et explosion de fruits */}
+      <Hero flavors={flavors} />
 
       <div className="overflow-hidden border-y-2 border-ink bg-ink py-3 text-cream">
         <div className="marquee flex w-max gap-10 font-display text-xl font-bold whitespace-nowrap">

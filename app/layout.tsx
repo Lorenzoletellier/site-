@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo, Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Fraunces, Geist, Geist_Mono } from "next/font/google";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import "./globals.css";
@@ -19,12 +19,11 @@ const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
 });
 
-// Titres de la scène d'accueil : très gras, italique
-const archivo = Archivo({
-  variable: "--font-archivo",
+// Serif élégante du hero de l'accueil et du menu
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
-  weight: ["800", "900"],
-  style: ["italic"],
+  axes: ["opsz"],
 });
 
 export const metadata: Metadata = {
@@ -36,7 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="fr"
-      className={`${geistSans.variable} ${geistMono.variable} ${bricolage.variable} ${archivo.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${bricolage.variable} ${fraunces.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <SiteHeader />

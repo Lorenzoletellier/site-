@@ -1,0 +1,210 @@
+"use client";
+
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
+import Can from "@/components/Can";
+import HeroFruits from "./HeroFruits";
+import { HERO_SLUGS, heroFor, heroTitle } from "@/lib/flavor-hero";
+import type { Flavor } from "@/lib/flavors";
+
+// La 3D n'est chargée que dans le navigateur
+const HeroCan = dynamic(() => import("./HeroCan"), { ssr: false });
+
+function useMedia(query: string) {
+  return useSyncExternalStore(
+    (onChange) => {
+      const list = window.matchMedia(query);
+      list.addEventListener("change", onChange);
+      return () => list.removeEventListener("change", onChange);
+    },
+    () => window.matchMedia(query).matches,
+    () => false,
+  );
+}
+
+const noop = () => () => {};
+// Faux côté serveur, vrai une fois dans le navigateur : les fruits jaillissent à l'arrivée
+const useHydrated = () => useSyncExternalStore(noop, () => true, () => false);
+
+const TRANSITION_MS = 800;
+
+export default function Hero({ flavors }: { flavors: Flavor[] }) {
+  const [index, setIndex] = useState(0);
+  const [leaving, setLeaving] = useState<{ index: number; key: number } | null>(null);
+  const [ready, setReady] = useState(false);
+  const [inView, setInView] = useState(true);
+  const mobile = useMedia("(max-width: 767px)");
+  const reducedMotion = useMedia("(prefers-reduced-motion: reduce)");
+  const hydrated = useHydrated();
+  const section = useRef<HTMLElement>(null);
+  const target = useRef({ x: 0, y: 0 });
+  const pointer = useRef({ x: 0, y: 0 });
+
+  const flavor = flavors[index];
+  const hero = heroFor(flavor);
+  const [line1, line2] = heroTitle(flavor, hero);
+  const preload = useMemo(() => flavors.map((f) => f.id).filter((id) => HERO_SLUGS.includes(id)), [flavors]);
+
+  // Couleurs de la saveur sur toute la page (le menu les reprend), animées par @property
+  useEffect(() => {
+    const root = document.documentElement.style;
+    root.setProperty("--hero-a", hero.background[0]);
+    root.setProperty("--hero-b", hero.background[1]);
+    root.setProperty("--hero-ink", hero.ink);
+    root.setProperty("--hero-button", hero.button);
+  }, [hero]);
+  useEffect(
+    () => () => ["--hero-a", "--hero-b", "--hero-ink", "--hero-button"].forEach((name) => document.documentElement.style.removeProperty(name)),
+    [],
+  );
+
+  // Les fruits de l'ancienne saveur restent le temps de s'envoler
+  useEffect(() => {
+    if (!leaving) return;
+    const id = setTimeout(() => setLeaving(null), TRANSITION_MS);
+    return () => clearTimeout(id);
+  }, [leaving]);
+
+  // Pause de la 3D et de la parallaxe quand le hero sort de l'écran
+  useEffect(() => {
+    const el = section.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting));
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Parallaxe à la souris, lissée, transmise aux fruits par les variables --mx / --my
+  useEffect(() => {
+    const el = section.current;
+    if (!el || reducedMotion || !inView) return;
+    let raf = 0;
+    const tick = () => {
+      const p = pointer.current;
+      p.x += (target.current.x - p.x) * 0.06;
+      p.y += (target.current.y - p.y) * 0.06;
+      el.style.setProperty("--mx", p.x.toFixed(3));
+      el.style.setProperty("--my", p.y.toFixed(3));
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [reducedMotion, inView]);
+
+  function onPointerMove(event: PointerEvent<HTMLElement>) {
+    if (event.pointerType !== "mouse") return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    target.current = {
+      x: ((event.clientX - rect.left) / rect.width) * 2 - 1,
+      y: ((event.clientY - rect.top) / rect.height) * 2 - 1,
+    };
+  }
+
+  function select(next: number) {
+    if (next === index) return;
+    setLeaving((previous) => ({ index, key: (previous?.key ?? 0) + 1 }));
+    setIndex(next);
+  }
+
+  // Sélecteur au clavier : flèches gauche / droite comme un groupe de boutons radio
+  function onSelectorKey(event: KeyboardEvent<HTMLDivElement>) {
+    const delta = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 0;
+    if (!delta) return;
+    event.preventDefault();
+    const next = (index + delta + flavors.length) % flavors.length;
+    select(next);
+    event.currentTarget.querySelectorAll<HTMLButtonElement>("[role=radio]")[next]?.focus();
+  }
+
+  const old = leaving ? flavors[leaving.index] : null;
+
+  return (
+    <section
+      ref={section}
+      onPointerMove={onPointerMove}
+      className="hero-bg relative h-[100svh] min-h-[620px] overflow-hidden"
+      style={{ "--mx": 0, "--my": 0, color: "var(--hero-ink)" } as CSSProperties}
+      aria-roledescription="carrousel"
+      aria-label="Nos saveurs"
+    >
+      {/* Scène de la canette : fruits du fond, canette 3D, fruits du premier plan */}
+      <div className="absolute inset-x-0 top-[8%] bottom-[47%] md:inset-y-0 md:left-[34%] md:w-[54%]">
+        <div className="absolute top-1/2 left-1/2 aspect-square h-[85%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/45 blur-3xl" aria-hidden />
+
+        {hydrated && old && <HeroFruits key={`back-${leaving!.key}`} hero={heroFor(old)} seed={leaving!.index} layer="back" mobile={mobile} leaving />}
+        {hydrated && <HeroFruits key={`back-${flavor.id}`} hero={hero} seed={index} layer="back" mobile={mobile} />}
+
+        <div className="absolute inset-0">
+          <div className={`absolute inset-0 grid place-items-center transition-opacity duration-500 ${ready ? "opacity-0" : "opacity-100"}`} aria-hidden>
+            <Can {...flavor} className="h-[62%] rotate-[20deg] drop-shadow-2xl" />
+          </div>
+          <HeroCan
+            flavor={flavor}
+            preload={preload}
+            pointer={pointer}
+            reducedMotion={reducedMotion}
+            mobile={mobile}
+            running={inView}
+            onReady={() => setReady(true)}
+          />
+        </div>
+
+        {hydrated && old && <HeroFruits key={`front-${leaving!.key}`} hero={heroFor(old)} seed={leaving!.index} layer="front" mobile={mobile} leaving />}
+        {hydrated && <HeroFruits key={`front-${flavor.id}`} hero={hero} seed={index} layer="front" mobile={mobile} />}
+      </div>
+
+      {/* Nom, slogan et bouton */}
+      <div className="absolute inset-x-0 bottom-[112px] px-6 font-serif md:inset-x-auto md:top-1/2 md:bottom-auto md:left-[5vw] md:max-w-[44vw] md:-translate-y-[58%] md:px-0">
+        <h1 key={flavor.id} className="hero-title-in text-[clamp(2.6rem,12vw,3.75rem)] leading-[0.92] font-semibold tracking-[-0.025em] md:text-[clamp(3.5rem,7.6vw,8.75rem)]">
+          {line1}
+          {line2 && <span className="block">{line2}</span>}
+        </h1>
+        <p key={`slogan-${flavor.id}`} className="hero-title-in mt-3 text-[clamp(1.15rem,4.6vw,1.4rem)] font-light [animation-delay:80ms] md:mt-5 md:text-[clamp(1.25rem,2vw,2rem)]">
+          {hero.slogan}
+        </p>
+        <Link
+          href={`/saveurs#${flavor.id}`}
+          className="mt-5 inline-flex items-center gap-4 rounded-full px-7 py-3.5 text-[1.05rem] shadow-[0_10px_30px_-12px_rgb(0_0_0/0.25)] transition hover:-translate-y-0.5 hover:brightness-95 md:mt-9 md:px-9 md:py-4 md:text-lg"
+          style={{ backgroundColor: "var(--hero-button)" }}
+        >
+          Découvrir la saveur
+          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" aria-hidden>
+            <path d="M3 12h18M15 6l6 6-6 6" />
+          </svg>
+        </Link>
+      </div>
+
+      {/* Sélecteur de saveurs */}
+      <div
+        role="radiogroup"
+        aria-label="Choisir une saveur"
+        onKeyDown={onSelectorKey}
+        className="absolute inset-x-0 bottom-4 flex snap-x gap-1 overflow-x-auto px-4 pt-2 pb-2 font-serif [scrollbar-width:none] md:right-auto md:bottom-8 md:left-[5vw] md:max-w-[52vw] md:flex-wrap md:overflow-visible md:px-0"
+      >
+        {flavors.map((f, i) => {
+          const active = i === index;
+          const h = heroFor(f);
+          return (
+            <button
+              key={f.id}
+              role="radio"
+              aria-checked={active}
+              tabIndex={active ? 0 : -1}
+              onClick={() => select(i)}
+              className="group flex w-[76px] shrink-0 snap-start flex-col items-center gap-2 rounded-xl py-1 text-center"
+            >
+              <span
+                className={`block h-8 w-8 rounded-full transition duration-300 group-hover:scale-110 md:h-9 md:w-9 ${active ? "outline-[1.5px] outline-offset-[5px] outline-solid" : ""}`}
+                style={{ backgroundColor: h.button, outlineColor: h.ink, boxShadow: "inset 0 -3px 6px rgb(0 0 0 / 0.08)" }}
+              />
+              <span className={`text-[0.78rem] leading-tight transition ${active ? "font-medium" : "font-light opacity-75 group-hover:opacity-100"}`}>
+                {f.name}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
+}

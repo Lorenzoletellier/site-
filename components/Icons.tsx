@@ -41,3 +41,17 @@ export const ArrowIcon = ({ className }: IconProps) => (
     <path d="m13 6 6 6-6 6" />
   </svg>
 );
+
+export const BagIcon = ({ className }: IconProps) => (
+  <svg {...base} strokeWidth={1.5} className={className}>
+    <path d="M5 8h14l-1 12H6L5 8Z" />
+    <path d="M9 10V6a3 3 0 0 1 6 0v4" />
+  </svg>
+);
+
+export const UserIcon = ({ className }: IconProps) => (
+  <svg {...base} strokeWidth={1.5} className={className}>
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4 21a8 8 0 0 1 16 0" />
+  </svg>
+);
