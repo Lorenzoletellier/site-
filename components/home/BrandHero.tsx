@@ -31,16 +31,19 @@ const BUBBLES = [
   [72, 16, 12, 1.8], [81, 7, 7.5, 5], [90, 11, 9.5, 2.2], [96, 6, 8, 0.8], [47, 18, 13, 6], [24, 9, 9, 7],
 ] as const;
 
+// Étoile à 12 branches. Coordonnées arrondies : Math.cos/sin ne donnent pas les mêmes
+// dernières décimales côté serveur et navigateur, ce qui casserait l'hydratation.
+const BURST_POINTS = Array.from({ length: 24 }, (_, i) => {
+  const r = i % 2 ? 26 : 50;
+  const a = (i / 24) * Math.PI * 2;
+  return `${(50 + r * Math.cos(a)).toFixed(2)},${(50 + r * Math.sin(a)).toFixed(2)}`;
+}).join(" ");
+
 // Formes graphiques : elles dérivent avec le défilement (k = vitesse, spin = rotation par px)
 function Burst({ className }: { className?: string }) {
-  const points = Array.from({ length: 24 }, (_, i) => {
-    const r = i % 2 ? 26 : 50;
-    const a = (i / 24) * Math.PI * 2;
-    return `${50 + r * Math.cos(a)},${50 + r * Math.sin(a)}`;
-  }).join(" ");
   return (
     <svg viewBox="0 0 100 100" className={className} aria-hidden>
-      <polygon points={points} fill="currentColor" />
+      <polygon points={BURST_POINTS} fill="currentColor" />
     </svg>
   );
 }
