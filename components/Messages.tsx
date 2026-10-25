@@ -91,13 +91,26 @@ export default function Messages() {
           ) : error ? (
             <p className="rounded-2xl bg-red-50 p-4 text-red-700">{error}</p>
           ) : messages.length === 0 ? (
-            <p className="text-ink/50">Aucun message pour l&apos;instant. Sois le premier !</p>
+            <div className="grid h-full min-h-64 place-items-center rounded-3xl border-2 border-dashed border-ink/25 bg-white/60 p-10 text-center">
+              <div>
+                <div className="mx-auto flex w-fit items-end gap-1.5" aria-hidden>
+                  <span className="h-4 w-4 rounded-full border-2 border-ink bg-sky" />
+                  <span className="h-7 w-7 rounded-full border-2 border-ink bg-electric" />
+                  <span className="h-5 w-5 rounded-full border-2 border-ink bg-corail" />
+                </div>
+                <p className="font-display mt-5 text-2xl font-bold">Le mur est encore tout calme.</p>
+                <p className="mt-2 text-ink/60">Lance la première bulle : ta saveur préférée, une idée de recette…</p>
+              </div>
+            </div>
           ) : (
-            <ul className="space-y-3">
-              {messages.map((m) => (
-                <li key={m.id} className="rounded-2xl bg-white p-5 ring-1 ring-ink/5">
+            <ul className="grid gap-4 sm:grid-cols-2">
+              {messages.map((m, i) => (
+                <li
+                  key={m.id}
+                  className={`rounded-3xl rounded-bl-md border-2 border-ink p-5 shadow-[4px_4px_0_var(--color-ink)] ${["bg-white", "bg-sky", "bg-cream"][i % 3]} ${i % 2 ? "rotate-[0.6deg]" : "-rotate-[0.6deg]"}`}
+                >
                   <p className="whitespace-pre-line">{m.content}</p>
-                  <p className="mt-2 text-xs text-ink/50">{formatDate(m.created_at)}</p>
+                  <p className="mt-3 text-xs font-medium text-ink/50">{formatDate(m.created_at)}</p>
                 </li>
               ))}
             </ul>

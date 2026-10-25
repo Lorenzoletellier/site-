@@ -73,7 +73,7 @@ export default async function Home() {
               <Link
                 key={f.id}
                 href={`/saveurs#${f.id}`}
-                className="group flex items-center gap-6 rounded-3xl p-6 transition hover:-translate-y-1"
+                className="group flex items-center gap-6 rounded-3xl border-2 border-ink p-6 shadow-[5px_5px_0_var(--color-ink)] transition hover:-translate-x-0.5 hover:-translate-y-1 hover:shadow-[7px_8px_0_var(--color-ink)]"
                 style={{ backgroundColor: flavorTone(f.color).soft }}
               >
                 <Can
@@ -126,15 +126,16 @@ export default async function Home() {
       <Messages />
 
       {/* Contact */}
-      <section className="mx-auto max-w-3xl px-4 pb-24 text-center sm:px-6">
-        <h2 className="font-display text-4xl font-extrabold sm:text-5xl">Une question ? Une envie de bulles ?</h2>
-        <p className="mt-4 text-ink/70">Commande pour un événement, revendeur ou simple curiosité : on répond sous 48 heures.</p>
-        <Link
-          href="/contact"
-          className="mt-8 inline-block btn btn-ghost px-7 py-4"
-        >
-          Nous écrire
-        </Link>
+      <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
+        <div className="relative overflow-hidden rounded-[2.5rem] border-2 border-ink bg-corail px-6 py-14 text-center shadow-[8px_8px_0_var(--color-ink)] sm:px-14">
+          <span className="absolute -top-6 -left-6 h-24 w-24 rounded-full border-2 border-ink bg-sky" aria-hidden />
+          <span className="absolute -right-4 -bottom-8 h-32 w-32 rounded-full border-2 border-ink bg-electric" aria-hidden />
+          <h2 className="font-display relative mx-auto max-w-2xl text-4xl font-extrabold sm:text-5xl">Une question ? Une envie de bulles ?</h2>
+          <p className="relative mx-auto mt-4 max-w-xl text-ink/80">Commande pour un événement, revendeur ou simple curiosité : on répond sous 48 heures.</p>
+          <Link href="/contact" className="relative mt-8 inline-flex btn btn-ghost px-7 py-4">
+            Nous écrire <ArrowIcon className="h-5 w-5" />
+          </Link>
+        </div>
       </section>
 
     </>

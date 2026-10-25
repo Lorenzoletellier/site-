@@ -41,22 +41,22 @@ export default function HeaderNav({ isLoggedIn, isAdmin, firstName, lines, subto
 
   return (
     <>
-      {/* Menu en serif fine : logo à gauche, liens et panier à droite */}
+      {/* Menu : logo à gauche, liens et panier à droite, dans la typo de la marque */}
       <header
-        className={`fixed inset-x-0 top-0 z-40 font-serif transition-[background-color,box-shadow,color] duration-300 ${solid ? "bg-cream/85 text-ink shadow-[0_1px_0_rgba(0,0,0,0.06)] backdrop-blur-md" : "text-cream"}`}
+        className={`fixed inset-x-0 top-0 z-40 font-display transition-[background-color,box-shadow,color] duration-300 ${solid ? "bg-cream/85 text-ink shadow-[0_1px_0_rgba(0,0,0,0.06)] backdrop-blur-md" : "text-cream"}`}
       >
         <div className="mx-auto flex h-16 max-w-[1500px] items-center justify-between gap-3 px-4 sm:h-20 sm:px-[5vw]">
-          <Link href="/" className="text-[1.7rem] font-semibold tracking-tight sm:text-[2.1rem]" aria-label="Pétille, accueil">
+          <Link href="/" className="text-[1.6rem] font-extrabold tracking-tight sm:text-[1.9rem]" aria-label="Pétille, accueil">
             Pétille
           </Link>
 
-          <nav className="flex items-center gap-1 text-[0.95rem] font-light sm:gap-2 sm:text-base">
+          <nav className="flex items-center gap-1 text-[0.95rem] font-semibold sm:gap-2 sm:text-base">
             {links.map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
                 aria-current={pathname === href ? "page" : undefined}
-                className={`rounded-full px-2 py-1.5 transition hover:opacity-70 sm:px-4 ${pathname === href ? "underline underline-offset-8" : ""}`}
+                className={`rounded-full px-3 py-1.5 transition sm:px-4 ${pathname === href ? "bg-current/10" : "hover:bg-current/10"}`}
               >
                 {label}
               </Link>
