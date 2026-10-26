@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import BlueHero from "@/components/BlueHero";
 import { ContactForm, NewsletterForm } from "@/components/ContactForms";
+import { getFlavors } from "@/lib/queries";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -12,22 +14,17 @@ const faq = [
   ["Vos sodas conviennent-ils aux enfants ?", "Oui : aucune caféine, sauf le Cola Vanille qui contient un peu de noix de kola. Tous sont peu sucrés."],
 ];
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const flavors = await getFlavors();
+  const flavor = flavors.find((f) => f.id === "framboise-basilic") ?? flavors[0];
+
   return (
     <>
-      <div className="bg-electric text-cream">
-        <div className="mx-auto max-w-6xl px-4 pt-8 pb-20 sm:px-6">
-          <p className="text-sm font-semibold tracking-[0.2em] text-sky uppercase">Contact</p>
-          <h1 className="font-display mt-2 max-w-2xl text-5xl leading-[0.95] font-extrabold sm:text-6xl">
-            Une question ? Une envie de bulles ?
-          </h1>
-          <p className="mt-6 max-w-xl text-lg text-cream/85">
-            On répond à tous les messages, en général sous 48 heures.
-          </p>
-        </div>
-      </div>
+      <BlueHero eyebrow="Contact" title="Une question ? Une envie de bulles ?" flavor={flavor}>
+        On répond à tous les messages, en général sous 48 heures.
+      </BlueHero>
 
-      <section className="mx-auto grid max-w-6xl gap-12 px-4 py-24 sm:px-6 md:grid-cols-5">
+      <section className="mx-auto grid max-w-6xl gap-12 px-4 pt-40 pb-24 sm:px-6 sm:pt-48 md:grid-cols-5">
         <ContactForm />
 
         <aside className="space-y-8 md:col-span-2">

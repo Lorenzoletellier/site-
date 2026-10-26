@@ -1,10 +1,12 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
-export type AuthFormState = { error: string | null };
+// notice : message de succès sans redirection (inscription en attente de confirmation)
+export type AuthFormState = { error: string | null; notice?: string | null };
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD_LENGTH = 8;
@@ -27,16 +29,33 @@ export async function signUp(_prev: AuthFormState, formData: FormData): Promise<
     return { error: `Le mot de passe doit faire au moins ${MIN_PASSWORD_LENGTH} caractères.` };
   }
 
+  // Le lien de confirmation revient sur ce domaine (local ou Vercel), puis vers la page demandée
+  const next = safeNext(formData.get("next"));
+  const headerList = await headers();
+  const host = headerList.get("x-forwarded-host") ?? headerList.get("host");
+  const protocol = headerList.get("x-forwarded-proto") ?? (host?.startsWith("localhost") ? "http" : "https");
+  const emailRedirectTo = host ? `${protocol}://${host}/auth/confirm?next=${encodeURIComponent(next)}` : undefined;
+
   const supabase = await createClient();
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { full_name: fullName } },
+    options: { data: { full_name: fullName }, emailRedirectTo },
   });
-  if (error) return { error: error.message };
+  if (error) {
+    if (error.code === "user_already_exists") return { error: "Un compte existe déjà avec cet e-mail : connecte-toi." };
+    if (error.code === "weak_password") return { error: "Mot de passe trop faible, choisis-en un plus long." };
+    if (error.code === "over_email_send_rate_limit") return { error: "Trop d'e-mails envoyés, réessaie dans quelques minutes." };
+    return { error: "Inscription impossible pour le moment, réessaie." };
+  }
+
+  // Confirmation d'e-mail activée dans Supabase : pas encore de session, l'utilisateur doit cliquer le lien
+  if (!data.session) {
+    return { error: null, notice: `Compte créé ! Clique sur le lien envoyé à ${email} pour l'activer, puis connecte-toi.` };
+  }
 
   revalidatePath("/", "layout");
-  redirect(safeNext(formData.get("next")));
+  redirect(next);
 }
 
 export async function signIn(_prev: AuthFormState, formData: FormData): Promise<AuthFormState> {
@@ -47,7 +66,12 @@ export async function signIn(_prev: AuthFormState, formData: FormData): Promise<
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) return { error: "Identifiants incorrects." };
+  if (error) {
+    if (error.code === "email_not_confirmed") {
+      return { error: "Ton e-mail n'est pas encore confirmé : clique sur le lien reçu à l'inscription (pense aux spams)." };
+    }
+    return { error: "E-mail ou mot de passe incorrect." };
+  }
 
   revalidatePath("/", "layout");
   redirect(safeNext(formData.get("next")));

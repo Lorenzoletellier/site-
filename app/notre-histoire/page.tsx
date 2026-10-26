@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import BlueHero from "@/components/BlueHero";
 import Can from "@/components/Can";
 import { flavorTone } from "@/lib/color";
-import { heroFor } from "@/lib/flavor-hero";
 import { getFlavors } from "@/lib/queries";
 
 export const metadata: Metadata = {
@@ -57,14 +56,6 @@ const timeline = [
   },
 ];
 
-// Bandeau : places des fruits autour de la canette et gouttes qui tombent (x %, y %, taille px, décalage s)
-const FRUIT_PLACES = [
-  "top-[2%] left-[4%] w-28 -rotate-12 sm:w-36",
-  "right-[2%] bottom-[18%] w-32 rotate-12 sm:w-40",
-  "top-[8%] right-[10%] w-16 blur-[1px] sm:w-20",
-];
-const DROPS: [number, number, number, number][] = [[24, 34, 10, 0], [72, 10, 8, 1.2], [80, 48, 12, 2.1], [18, 60, 7, 2.8]];
-
 const steps = [
   ["01", "Choisir les fruits", "Bio, de saison, auprès de producteurs partenaires."],
   ["02", "Presser et infuser", "Les fruits sont pressés à froid, les plantes infusées doucement."],
@@ -82,63 +73,14 @@ export default async function NotreHistoirePage() {
   const flavors = await getFlavors();
   const byId = Object.fromEntries(flavors.map((f) => [f.id, f]));
   const pick = (id: string) => byId[id] ?? flavors[0];
-  const heroFruits = heroFor(pick("citron-yuzu")).fruits;
 
   return (
     <>
-      {/* Intro : bleu cobalt en dégradé, le menu passe dessus ; la canette déborde sur la page */}
-      <section className="relative z-10 text-cream">
-        <div className="absolute inset-0 -z-10 overflow-hidden bg-[radial-gradient(110%_90%_at_78%_35%,#2b3fd9_0%,#1a2bc2_38%,#101c7a_75%,#0b1450_100%)]" aria-hidden>
-          {/* Grain de bulles très léger pour casser l'aplat */}
-          <div className="absolute inset-0 opacity-[0.07] [background-image:radial-gradient(circle_at_center,#fff4e3_1.2px,transparent_1.6px)] [background-size:22px_22px]" />
-          <div className="absolute top-1/2 right-[8%] h-[34rem] w-[34rem] -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgb(247_220_133/0.28),transparent_65%)]" />
-        </div>
-
-        <div className="mx-auto grid max-w-6xl items-center gap-6 px-4 pt-28 pb-16 sm:px-6 sm:pt-32 md:grid-cols-[1.1fr_1fr] md:pb-20">
-          <div>
-            <p className="text-sm font-semibold tracking-[0.2em] text-sky uppercase">Notre histoire</p>
-            <h1 className="font-display mt-3 text-5xl leading-[1.02] font-extrabold tracking-[-0.02em] sm:text-7xl">
-              Né dans une cuisine, pas dans un labo.
-            </h1>
-            <p className="mt-7 max-w-lg text-lg leading-relaxed text-cream sm:text-xl">
-              Pétille, c&apos;est l&apos;histoire de deux amis, Romain et Lorenzo, qui trouvaient les sodas trop sucrés et pas assez
-              savoureux. Alors ils ont fait les leurs, une casserole à la fois.
-            </p>
-          </div>
-
-          <div className="relative h-80 sm:h-[26rem]">
-            {/* Fruits et gouttes autour de la canette */}
-            {heroFruits.map((fruit, i) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                key={fruit}
-                src={`/fruits/${fruit}.png`}
-                alt=""
-                aria-hidden
-                className={`hero-float pointer-events-none absolute object-contain drop-shadow-[0_16px_18px_rgb(0_0_40/0.35)] ${FRUIT_PLACES[i % FRUIT_PLACES.length]}`}
-                style={{ "--duration": `${6 + i}s`, "--float-delay": `${-i * 1.5}s` } as CSSProperties}
-              />
-            ))}
-            {DROPS.map(([left, top, size, delay], i) => (
-              <svg
-                key={i}
-                viewBox="0 0 12 16"
-                className="drop-fall pointer-events-none absolute text-cream/70"
-                style={{ left: `${left}%`, top: `${top}%`, width: size, "--delay": `${delay}s`, "--duration": `${3.5 + i * 0.4}s` } as CSSProperties}
-                aria-hidden
-              >
-                <path d="M6 0C6 0 0 7.5 0 10.5a6 6 0 0 0 12 0C12 7.5 6 0 6 0Z" fill="currentColor" />
-              </svg>
-            ))}
-
-            {/* La canette dépasse du bandeau ; son ombre douce tombe sur la page */}
-            <div className="absolute inset-x-0 -bottom-24 flex flex-col items-center sm:-bottom-32">
-              <Can {...pick("citron-yuzu")} className="float relative z-10 h-[23rem] rotate-[6deg] drop-shadow-[0_30px_30px_rgb(5_10_60/0.35)] sm:h-[29rem]" />
-              <span className="-mt-6 h-8 w-44 rounded-[50%] bg-ink/25 blur-xl sm:w-52" aria-hidden />
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Intro : bleu cobalt, le menu passe dessus ; la canette déborde sur la page */}
+      <BlueHero eyebrow="Notre histoire" title="Né dans une cuisine, pas dans un labo." flavor={pick("citron-yuzu")}>
+        Pétille, c&apos;est l&apos;histoire de deux amis, Romain et Lorenzo, qui trouvaient les sodas trop sucrés et pas assez
+        savoureux. Alors ils ont fait les leurs, une casserole à la fois.
+      </BlueHero>
 
       {/* Frise */}
       <section className="mx-auto max-w-5xl px-4 pt-40 pb-24 sm:px-6 sm:pt-48">

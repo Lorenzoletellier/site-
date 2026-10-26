@@ -14,6 +14,9 @@ const links = [
   { href: "/notre-histoire", label: "Notre univers" },
 ];
 
+// Pages ouvertes par un bandeau bleu (BlueHero) : le menu y est transparent et crème
+const BLUE_HERO_PAGES = ["/notre-histoire", "/contact", "/connexion", "/inscription"];
+
 type Props = {
   isLoggedIn: boolean;
   isAdmin: boolean;
@@ -28,8 +31,7 @@ export default function HeaderNav({ isLoggedIn, isAdmin, firstName, lines, subto
   const [scrolled, setScrolled] = useState(false);
   const count = lines.reduce((sum, line) => sum + line.quantity, 0);
   const home = pathname === "/";
-  // Pages dont le bandeau bleu passe sous le menu : le menu y est transparent et crème
-  const overHero = home || pathname === "/notre-histoire";
+  const overHero = home || BLUE_HERO_PAGES.includes(pathname);
 
   // Sur l'accueil, le menu est transparent au-dessus du hero puis prend un fond en descendant
   useEffect(() => {

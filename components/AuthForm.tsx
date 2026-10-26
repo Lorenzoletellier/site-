@@ -29,7 +29,11 @@ export default function AuthForm({ mode, next }: { mode: "signin" | "signup"; ne
           autoComplete={isSignup ? "new-password" : "current-password"} className="field font-normal" />
         {isSignup && <span className="text-xs font-normal text-ink/50">8 caractères minimum.</span>}
       </label>
-      <p aria-live="polite" className="min-h-5 text-sm font-semibold text-red-700">{state.error}</p>
+      {state.notice ? (
+        <p role="status" className="rounded-2xl bg-sky/40 p-4 text-sm font-semibold text-navy">{state.notice}</p>
+      ) : (
+        <p aria-live="polite" className="min-h-5 text-sm font-semibold text-red-700">{state.error}</p>
+      )}
       <button disabled={pending} className="btn btn-primary px-8 py-4">
         {pending ? "Un instant…" : isSignup ? "Créer mon compte" : "Se connecter"}
       </button>
