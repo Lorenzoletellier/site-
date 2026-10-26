@@ -123,10 +123,11 @@ export default function BrandHero({ flavors }: { flavors: Flavor[] }) {
     <section
       ref={section}
       onPointerMove={onPointerMove}
-      className="relative isolate overflow-hidden bg-electric text-cream"
+      className="relative isolate overflow-hidden bg-[radial-gradient(110%_90%_at_72%_40%,#2b3fd9_0%,#1a2bc2_40%,#101c7a_78%,#0b1450_100%)] text-cream"
       style={{ "--mx": 0, "--my": 0, "--sy": 0 } as CSSProperties}
     >
       {/* Halo et grain de profondeur derrière la composition */}
+      <div className="pointer-events-none absolute inset-0 -z-10 opacity-[0.07] [background-image:radial-gradient(circle_at_center,#fff4e3_1.2px,transparent_1.6px)] [background-size:22px_22px]" aria-hidden />
       <div className="pointer-events-none absolute top-[38%] left-1/2 -z-10 aspect-square w-[min(110vw,900px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgb(120_140_255/0.45),transparent_65%)] md:top-1/2 md:left-[72%]" aria-hidden />
 
       {/* Formes graphiques qui dérivent au défilement */}

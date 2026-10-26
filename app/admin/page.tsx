@@ -40,9 +40,9 @@ export default async function AdminDashboard() {
         <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
           {tiles.map((tile, i) => (
             <div key={tile.label} className={`rounded-3xl p-6 ${i === 0 ? "bg-electric text-cream" : "bg-white ring-1 ring-ink/5"}`}>
-              <p className="text-xs font-semibold tracking-[0.2em] text-ink/60 uppercase">{tile.label}</p>
+              <p className={`text-xs font-semibold tracking-[0.2em] uppercase ${i === 0 ? "text-cream/70" : "text-ink/60"}`}>{tile.label}</p>
               <p className="font-display mt-3 text-3xl font-extrabold tabular-nums">{tile.value}</p>
-              <p className="mt-1 text-xs text-ink/60">{tile.hint}</p>
+              <p className={`mt-1 text-xs ${i === 0 ? "text-cream/70" : "text-ink/60"}`}>{tile.hint}</p>
             </div>
           ))}
         </div>
