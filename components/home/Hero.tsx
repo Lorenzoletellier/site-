@@ -120,7 +120,7 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
       ref={section}
       onPointerMove={onPointerMove}
       id="nos-saveurs"
-      className="hero-bg relative h-[100svh] min-h-[620px] scroll-mt-16 overflow-hidden"
+      className="hero-bg relative h-[calc(100svh-4rem)] min-h-[600px] sm:h-[calc(100svh-5rem)] scroll-mt-16 overflow-clip"
       style={{ "--mx": 0, "--my": 0, color: "var(--hero-ink)" } as CSSProperties}
       aria-roledescription="carrousel"
       aria-label="Nos saveurs"
@@ -153,26 +153,6 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
         {hydrated && old && <HeroFruits key={`front-${leaving!.key}`} hero={heroFor(old)} seed={leaving!.index} layer="front" mobile={mobile} leaving />}
         {hydrated && <HeroFruits key={`front-${flavor.id}`} hero={hero} seed={index} layer="front" mobile={mobile} />}
 
-        {/* Ouvrir la canette : anneau, pschitt et gerbe de liquide */}
-        {webgl && ready && (
-          <button
-            type="button"
-            disabled={opening}
-            onClick={() => {
-              setOpenKey((k) => k + 1);
-              setOpening(true);
-              setTimeout(() => setOpening(false), 2800);
-            }}
-            className="absolute right-[2%] bottom-[6%] z-10 flex items-center gap-2 rounded-full bg-white/80 px-5 py-3 font-serif text-base shadow-[0_10px_30px_-12px_rgb(0_0_0/0.35)] backdrop-blur transition hover:-translate-y-0.5 hover:bg-white disabled:opacity-60 md:top-1/2 md:right-[-2%] md:bottom-auto md:-translate-y-1/2 md:hover:-translate-y-[calc(50%+2px)]"
-            style={{ color: "var(--hero-ink)" }}
-          >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <path d="M7 5h10M7 5c0-1 .8-2 2-2h6c1.2 0 2 1 2 2v14c0 1-.8 2-2 2H9c-1.2 0-2-1-2-2V5Z" />
-              <path d="M10 3.5c.5-1 1.5-1.5 2.5-1" />
-            </svg>
-            {opening ? "Pschitt !" : "Ouvrir"}
-          </button>
-        )}
       </div>
 
       {/* Nom, slogan et bouton */}
@@ -196,12 +176,13 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
         </Link>
       </div>
 
-      {/* Sélecteur de saveurs */}
+      {/* Sélecteur de saveurs et bouton d'ouverture, alignés sur une même ligne */}
+      <div className="absolute inset-x-0 bottom-4 flex items-center gap-2 pr-4 font-serif md:right-[5vw] md:bottom-8 md:left-[5vw] md:gap-6 md:pr-0">
       <div
         role="radiogroup"
         aria-label="Choisir une saveur"
         onKeyDown={onSelectorKey}
-        className="absolute inset-x-0 bottom-4 flex snap-x gap-1 overflow-x-auto px-4 pt-2 pb-2 font-serif [scrollbar-width:none] md:right-auto md:bottom-8 md:left-[5vw] md:max-w-[60vw] md:px-0"
+        className="flex min-w-0 flex-1 snap-x gap-1 overflow-x-auto px-4 pt-2 pb-2 [scrollbar-width:none] md:max-w-[60vw] md:flex-none md:px-0"
       >
         {flavors.map((f, i) => {
           const active = i === index;
@@ -225,6 +206,34 @@ export default function Hero({ flavors }: { flavors: Flavor[] }) {
             </button>
           );
         })}
+      </div>
+
+        {/* Ouvrir la canette : anneau, pschitt et gerbe de liquide */}
+        {webgl && ready && (
+          <button
+            type="button"
+            disabled={opening}
+            aria-live="polite"
+            aria-label={opening ? "Pschitt !" : "Ouvrir la canette"}
+            onClick={() => {
+              setOpenKey((k) => k + 1);
+              setOpening(true);
+              setTimeout(() => setOpening(false), 2800);
+            }}
+            className="group/open relative ml-auto flex shrink-0 items-center gap-2.5 rounded-full py-2 pr-5 pl-2 text-[0.95rem] font-medium shadow-[0_12px_30px_-14px_rgb(0_0_0/0.45)] ring-1 ring-black/5 transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_34px_-14px_rgb(0_0_0/0.5)] active:translate-y-0 active:scale-[0.97] disabled:cursor-default md:py-2.5 md:pr-6 md:text-base"
+            style={{ backgroundColor: "var(--hero-button)", color: "var(--hero-ink)" }}
+          >
+            {/* Pastille blanche avec l'anneau d'ouverture, qui se soulève au survol */}
+            <span className="grid h-9 w-9 place-items-center rounded-full bg-white/85 md:h-10 md:w-10" aria-hidden>
+              <svg viewBox="0 0 24 24" className={`h-5 w-5 transition-transform duration-300 group-hover/open:-rotate-[25deg] ${opening ? "-rotate-[35deg]" : ""}`} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                <ellipse cx="12" cy="15" rx="8" ry="3.2" />
+                <path d="M8.5 13.2c0-2.6 1.6-4.2 3.5-4.2s3.5 1.6 3.5 4.2" />
+                <circle cx="12" cy="11.6" r="1" fill="currentColor" stroke="none" />
+              </svg>
+            </span>
+            <span>{opening ? "Pschitt !" : <>Ouvrir<span className="hidden sm:inline"> la canette</span></>}</span>
+          </button>
+        )}
       </div>
     </section>
   );

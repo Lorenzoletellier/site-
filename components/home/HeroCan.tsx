@@ -30,6 +30,22 @@ const GRAVITY = -11;
 
 type CanBox = { top: number; radius: number };
 
+// Boîte englobante dans le repère du parent (le groupe qui fait tourner la canette),
+// sans l'inclinaison ni la rotation appliquées au-dessus
+function localBox(root: THREE.Object3D) {
+  root.updateMatrixWorld(true);
+  const toParent = root.parent ? root.parent.matrixWorld.clone().invert() : new THREE.Matrix4();
+  const box = new THREE.Box3();
+  const m = new THREE.Matrix4();
+  root.traverse((child) => {
+    if (!(child instanceof THREE.Mesh)) return;
+    if (!child.geometry.boundingBox) child.geometry.computeBoundingBox();
+    m.multiplyMatrices(toParent, child.matrixWorld);
+    box.union(child.geometry.boundingBox!.clone().applyMatrix4(m));
+  });
+  return box;
+}
+
 // Gouttes et bulles du « pschitt », en coordonnées du monde (indépendantes du mouvement de la canette)
 function Spray({ color, origin, up, startAt, mobile, reducedMotion }: {
   color: string;
@@ -46,8 +62,8 @@ function Spray({ color, origin, up, startAt, mobile, reducedMotion }: {
   const tmp = useMemo(() => new THREE.Object3D(), []);
   const state = useMemo(
     () => ({
-      d: Array.from({ length: DROPS }, () => ({ p: new THREE.Vector3(), v: new THREE.Vector3(), born: 0, life: 0, size: 0 })),
-      b: Array.from({ length: BUBBLES }, () => ({ p: new THREE.Vector3(), v: new THREE.Vector3(), born: 0, life: 0, size: 0 })),
+      d: Array.from({ length: DROPS }, () => ({ p: new THREE.Vector3(), v: new THREE.Vector3(), born: 0, life: 0, size: 0, speed: 0, spread: 0, angle: 0, live: false })),
+      b: Array.from({ length: BUBBLES }, () => ({ p: new THREE.Vector3(), v: new THREE.Vector3(), born: 0, life: 0, size: 0, speed: 0, spread: 0, angle: 0, live: false })),
       launched: -1,
     }),
     [DROPS, BUBBLES],
@@ -58,33 +74,43 @@ function Spray({ color, origin, up, startAt, mobile, reducedMotion }: {
     const start = startAt.current;
     const o = origin.current;
     const u = up.current;
-    // Nouvelle ouverture : on prépare chaque goutte (départ étalé sur 0,5 s depuis l'ouverture)
-    if (start !== null && state.launched !== start && o && u) {
+    // Nouvelle ouverture : on tire le hasard de chaque goutte (départ étalé sur 0,5 s depuis l'ouverture).
+    // La position de départ n'est prise qu'à la naissance de la goutte : la canette a fini de se placer.
+    if (start !== null && state.launched !== start) {
       state.launched = start;
-      const side = new THREE.Vector3(1, 0, 0).cross(u).normalize();
-      const side2 = u.clone().cross(side).normalize();
       for (const d of state.d) {
         d.born = start + PSCHITT + Math.random() * 0.5;
         d.life = 0.9 + Math.random() * 0.8;
         d.size = 0.03 + Math.random() * 0.07;
-        d.p.copy(o);
-        const speed = 3.5 + Math.random() * 4.5;
-        const spread = Math.random() * 1.4;
-        const a = Math.random() * Math.PI * 2;
-        d.v.copy(u).multiplyScalar(speed).addScaledVector(side, Math.cos(a) * spread).addScaledVector(side2, Math.sin(a) * spread);
+        d.speed = 3.5 + Math.random() * 4.5;
+        d.spread = Math.random() * 1.4;
+        d.angle = Math.random() * Math.PI * 2;
+        d.live = false;
       }
       for (const b of state.b) {
         b.born = start + PSCHITT + Math.random() * 1.6;
         b.life = 1.2 + Math.random() * 1.2;
         b.size = 0.02 + Math.random() * 0.05;
-        b.p.copy(o).add(new THREE.Vector3((Math.random() - 0.5) * 0.5, 0, (Math.random() - 0.5) * 0.5));
-        b.v.set((Math.random() - 0.5) * 0.4, 0.8 + Math.random() * 1.2, (Math.random() - 0.5) * 0.4);
+        b.live = false;
       }
     }
+    const side = new THREE.Vector3(1, 0, 0).cross(u).normalize();
+    const side2 = u.clone().cross(side).normalize();
     const step = (mesh: THREE.InstancedMesh | null, list: typeof state.d, gravity: number) => {
       if (!mesh) return;
       list.forEach((item, i) => {
         const age = now - item.born;
+        if (start !== null && age >= 0 && !item.live) {
+          // Naissance : départ depuis l'ouverture du couvercle, dans l'axe de la canette
+          item.live = true;
+          if (gravity) {
+            item.p.copy(o);
+            item.v.copy(u).multiplyScalar(item.speed).addScaledVector(side, Math.cos(item.angle) * item.spread).addScaledVector(side2, Math.sin(item.angle) * item.spread);
+          } else {
+            item.p.copy(o).addScaledVector(side, (Math.random() - 0.5) * 0.4).addScaledVector(side2, (Math.random() - 0.5) * 0.4);
+            item.v.copy(u).multiplyScalar(0.8 + Math.random() * 1.2).addScaledVector(side, (Math.random() - 0.5) * 0.4);
+          }
+        }
         if (start === null || age < 0 || age > item.life) {
           tmp.scale.setScalar(0);
         } else {
@@ -151,11 +177,21 @@ function FloatingCan({ flavor, pointer, reducedMotion, mobile, onReady, openKey 
     sprayStart.current = null;
   }, [flavor.id]);
 
+  // Point de départ de la gerbe : l'ouverture du couvercle, convertie dans le repère du monde
+  const updateSprayOrigin = () => {
+    const s = spin.current;
+    if (!s) return;
+    s.updateWorldMatrix(true, false);
+    origin.current.set(0, box.current.top, box.current.radius * 0.45);
+    s.localToWorld(origin.current);
+    upDir.current.set(0, 1, 0).applyQuaternion(s.getWorldQuaternion(new THREE.Quaternion())).normalize();
+  };
+
   const ring = useRef<THREE.Object3D | null>(null);
   const handleLoad = (root: THREE.Object3D) => {
     // L'anneau du modèle est caché pendant l'ouverture : on anime le nôtre, articulé sur le rivet
     ring.current = root.getObjectByName("anneau") ?? null;
-    const b = new THREE.Box3().setFromObject(root);
+    const b = localBox(root);
     box.current = { top: b.max.y, radius: Math.max(b.max.x - b.min.x, b.max.z - b.min.z) / 2 };
     onReady();
   };
@@ -243,10 +279,7 @@ function FloatingCan({ flavor, pointer, reducedMotion, mobile, onReady, openKey 
       o.rotation.z = THREE.MathUtils.damp(o.rotation.z, shake, 6, delta);
       o.rotation.x = THREE.MathUtils.damp(o.rotation.x, 0.38, 6, delta);
       o.position.y = THREE.MathUtils.damp(o.position.y, -0.35, 5, delta);
-      // Point de départ de la gerbe : le haut de la canette, dans le monde
-      origin.current.set(0, box.current.top, 0);
-      s.localToWorld(origin.current);
-      upDir.current.set(0, 1, 0).applyQuaternion(s.getWorldQuaternion(new THREE.Quaternion())).normalize();
+      updateSprayOrigin();
       return;
     }
 

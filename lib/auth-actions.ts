@@ -49,6 +49,11 @@ export async function signUp(_prev: AuthFormState, formData: FormData): Promise<
     return { error: "Inscription impossible pour le moment, réessaie." };
   }
 
+  // E-mail déjà inscrit : Supabase répond sans erreur mais sans identité et n'envoie aucun e-mail
+  if (data.user && data.user.identities?.length === 0) {
+    return { error: "Un compte existe déjà avec cet e-mail : connecte-toi plutôt." };
+  }
+
   // Confirmation d'e-mail activée dans Supabase : pas encore de session, l'utilisateur doit cliquer le lien
   if (!data.session) {
     return { error: null, notice: `Compte créé ! Clique sur le lien envoyé à ${email} pour l'activer, puis connecte-toi.` };
