@@ -28,6 +28,8 @@ export default function HeaderNav({ isLoggedIn, isAdmin, firstName, lines, subto
   const [scrolled, setScrolled] = useState(false);
   const count = lines.reduce((sum, line) => sum + line.quantity, 0);
   const home = pathname === "/";
+  // Pages dont le bandeau bleu passe sous le menu : le menu y est transparent et crème
+  const overHero = home || pathname === "/notre-histoire";
 
   // Sur l'accueil, le menu est transparent au-dessus du hero puis prend un fond en descendant
   useEffect(() => {
@@ -36,8 +38,7 @@ export default function HeaderNav({ isLoggedIn, isAdmin, firstName, lines, subto
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-  // Au-dessus du hero bleu de l'accueil, le menu est transparent et crème
-  const solid = !home || scrolled;
+  const solid = !overHero || scrolled;
 
   return (
     <>
@@ -50,15 +51,20 @@ export default function HeaderNav({ isLoggedIn, isAdmin, firstName, lines, subto
             Pétille
           </Link>
 
-          <nav className="flex items-center gap-1 text-[0.95rem] font-semibold sm:gap-2 sm:text-base">
+          <nav className="flex items-center gap-0 text-[0.9rem] font-semibold sm:gap-2 sm:text-base">
             {links.map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
                 aria-current={pathname === href ? "page" : undefined}
-                className={`rounded-full px-3 py-1.5 transition sm:px-4 ${pathname === href ? "bg-current/10" : "hover:bg-current/10"}`}
+                className="group relative px-2 py-2 whitespace-nowrap transition sm:px-4"
               >
                 {label}
+                {/* Indicateur actif : un trait court sous le lien, qui s'allonge au survol */}
+                <span
+                  className={`absolute inset-x-2 bottom-0.5 mx-auto h-[3px] rounded-full bg-current transition-[width,opacity] duration-300 sm:inset-x-4 ${pathname === href ? "w-5 opacity-100" : "w-0 opacity-0 group-hover:w-5 group-hover:opacity-60"}`}
+                  aria-hidden
+                />
               </Link>
             ))}
 
@@ -93,8 +99,8 @@ export default function HeaderNav({ isLoggedIn, isAdmin, firstName, lines, subto
           </nav>
         </div>
       </header>
-      {/* Sur l'accueil, le hero passe sous le menu ; ailleurs on réserve sa place */}
-      {!home && <div className="h-16 sm:h-20" aria-hidden />}
+      {/* Sous un bandeau bleu, le hero passe sous le menu ; ailleurs on réserve sa place */}
+      {!overHero && <div className="h-16 sm:h-20" aria-hidden />}
 
       {open && (
         <CartDrawer lines={lines} subtotalCents={subtotalCents} isLoggedIn={isLoggedIn} onClose={() => setOpen(false)} />

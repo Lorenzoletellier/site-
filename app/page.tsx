@@ -1,9 +1,11 @@
 import Link from "next/link";
 import Can from "@/components/Can";
 import BrandHero from "@/components/home/BrandHero";
+import MoodQuiz from "@/components/home/MoodQuiz";
+import Reviews from "@/components/home/Reviews";
 import Messages from "@/components/Messages";
 import { ArrowIcon, DropIcon, LeafIcon, RecycleIcon } from "@/components/Icons";
-import { getFlavors } from "@/lib/queries";
+import { getFlavors, getReviewsSummary } from "@/lib/queries";
 import { formatPrice } from "@/lib/flavors";
 import { flavorTone } from "@/lib/color";
 
@@ -16,7 +18,7 @@ const reasons = [
 
 export default async function Home() {
   // Les saveurs viennent de la base : une saveur ajoutée par l'admin apparaît ici
-  const flavors = await getFlavors();
+  const [flavors, reviews] = await Promise.all([getFlavors(), getReviewsSummary()]);
   const byId = Object.fromEntries(flavors.map((f) => [f.id, f]));
   const pick = (id: string, index: number) => byId[id] ?? flavors[index % flavors.length];
   const favorites = ["citron-yuzu", "framboise-basilic", "cola-vanille"].map((id, i) => pick(id, i));
@@ -36,6 +38,9 @@ export default async function Home() {
           )}
         </div>
       </div>
+
+      {/* Quiz « Trouver ma saveur », ancre du bouton du hero */}
+      <MoodQuiz flavors={flavors} />
 
       {/* Pourquoi Pétille */}
       <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
@@ -90,6 +95,8 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      <Reviews flavors={flavors} {...reviews} />
 
       {/* Teaser histoire */}
       <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6">

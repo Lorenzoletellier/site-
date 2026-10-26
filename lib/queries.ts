@@ -9,7 +9,23 @@ export async function getFlavors(): Promise<Flavor[]> {
   return data.map(toFlavor);
 }
 
-export type CartLine = { flavor: Flavor; quantity: number; lineCents: number };
+export type PublicReview = { id: number; productId: number; rating: number; comment: string; createdAt: string };
+
+// Avis clients : seuls les acheteurs peuvent noter (RLS), la note moyenne porte sur tous les avis
+export async function getReviewsSummary(): Promise<{ average: number; count: number; latest: PublicReview[] }> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("reviews").select("id, product_id, rating, comment, created_at").order("created_at", { ascending: false });
+  if (error || !data || data.length === 0) return { average: 0, count: 0, latest: [] };
+  const average = Math.round((data.reduce((sum, r) => sum + r.rating, 0) / data.length) * 10) / 10;
+  const latest = data
+    .filter((r) => r.comment && r.comment.trim().length > 0)
+    .slice(0, 6)
+    .map((r) => ({ id: r.id, productId: r.product_id, rating: r.rating, comment: r.comment!.trim(), createdAt: r.created_at }));
+  return { average, count: data.length, latest };
+}
+
+export type CartLine ={ flavor: Flavor; quantity: number; lineCents: number };
 
 export async function getCart(userId: string): Promise<{ lines: CartLine[]; subtotalCents: number }> {
   const supabase = await createClient();

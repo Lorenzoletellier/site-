@@ -52,10 +52,10 @@ body {
 /* Boutons « sticker » : bord encre et ombre décalée qui se creuse au survol et s'écrase au clic */
 @utility btn {
   @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-ink font-semibold;
-  box-shadow: 4px 4px 0 var(--color-ink);
+  box-shadow: 3px 3px 0 rgb(12 12 20 / 0.85);
   transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 180ms ease, background-color 200ms ease;
-  &:hover:not(:disabled) { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--color-ink); }
-  &:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--color-ink); }
+  &:hover:not(:disabled) { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 rgb(12 12 20 / 0.85); }
+  &:active:not(:disabled) { transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgb(12 12 20 / 0.85); }
   &:disabled { opacity: 0.45; cursor: not-allowed; }
 }
 @utility btn-primary {
@@ -146,6 +146,44 @@ body {
 .marquee { animation: marquee 25s linear infinite; }
 .badge-pop { animation: badge-pop 450ms cubic-bezier(0.34, 1.56, 0.64, 1); }
 
+/* Quiz : chaque question glisse en place, la canette du résultat arrive en rebondissant */
+@keyframes quiz-step {
+  from { opacity: 0; translate: 24px 0; }
+}
+@keyframes quiz-can {
+  from { opacity: 0; translate: 0 40px; rotate: 8deg; scale: 0.85; }
+}
+.quiz-step { animation: quiz-step 420ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.quiz-can { animation: quiz-can 800ms cubic-bezier(0.34, 1.56, 0.64, 1) 120ms both; }
+
+/* Boutique : halo et ombre au sol de la canette, qui suivent le survol de la carte */
+.shop-stage::before {
+  content: "";
+  position: absolute;
+  inset: 12% 16% 18%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.85), transparent);
+  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.shop-shadow { transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1), opacity 500ms ease; }
+.group:hover .shop-stage::before { transform: scale(1.12); }
+.group:hover .shop-shadow { transform: scaleX(0.82); opacity: 0.55; }
+
+/* Bouton d'ajout : coche de confirmation */
+@keyframes added-pop {
+  0% { scale: 0.6; opacity: 0; }
+  60% { scale: 1.15; opacity: 1; }
+}
+.added-pop { animation: added-pop 380ms cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* Bandeau Notre histoire : canette qui flotte, gouttes et fruits autour */
+@keyframes drop-fall {
+  0% { translate: 0 -10px; opacity: 0; }
+  20% { opacity: 1; }
+  100% { translate: 0 60px; opacity: 0; }
+}
+.drop-fall { animation: drop-fall var(--duration, 4s) ease-in var(--delay, 0s) infinite; }
+
 @keyframes fade { from { opacity: 0; } }
 @keyframes fade-out { to { opacity: 0; } }
 
@@ -153,7 +191,9 @@ body {
   html { scroll-behavior: auto; }
   .btn, .btn:hover, .btn:active { transform: none !important; transition: none; }
   .bubble-rise { display: none; }
-  .float, .float-slow, .marquee, .badge-pop, .group:hover .can-hover, .group:focus-within .can-hover, .hero-float { animation: none; }
+  .float, .float-slow, .marquee, .badge-pop, .group:hover .can-hover, .group:focus-within .can-hover, .hero-float, .drop-fall, .added-pop { animation: none; }
+  .quiz-step, .quiz-can { animation-name: fade; animation-duration: 300ms; }
+  .shop-stage::before, .shop-shadow { transition: none; }
   .fruit-in, .hero-title-in { animation-name: fade; animation-duration: 400ms; }
   .fruit-out { animation-name: fade-out; animation-duration: 300ms; }
 }
