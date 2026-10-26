@@ -5,7 +5,7 @@ import { useRef, useState, useTransition } from "react";
 import Can from "./Can";
 import ProductModal from "./ProductModal";
 import { changeCartQuantity } from "@/lib/shop-actions";
-import { families, formatPrice, LOW_STOCK, type Family, type Flavor } from "@/lib/flavors";
+import { families, formatPrice, isSoldOut, LOW_STOCK, type Family, type Flavor } from "@/lib/flavors";
 import { flavorTone } from "@/lib/color";
 import { heroFor } from "@/lib/flavor-hero";
 
@@ -87,7 +87,7 @@ export default function Shop({ flavors, cart, isLoggedIn }: Props) {
         <div className="mt-10 grid grid-cols-1 gap-5 min-[560px]:grid-cols-2 lg:grid-cols-3 lg:gap-6">
           {shown.map((f) => {
             const inCart = cart[f.id] ?? 0;
-            const soldOut = f.stock === 0;
+            const soldOut = isSoldOut(f);
             const tone = flavorTone(f.color);
             const pending = pendingId === f.id;
             const added = addedId === f.id;
@@ -122,7 +122,14 @@ export default function Shop({ flavors, cart, isLoggedIn }: Props) {
 
                 <div className="mt-5 flex items-baseline justify-between gap-3">
                   <h2 className="font-display truncate text-[1.6rem] leading-tight font-extrabold tracking-tight" title={f.name}>{f.name}</h2>
-                  <span className="font-display shrink-0 text-xl font-bold tabular-nums">{formatPrice(f.price)}</span>
+                  <span className="font-display shrink-0 text-xl font-bold tabular-nums">
+                    {f.compareAtPriceCents && (
+                      <s className="mr-1.5 text-sm font-semibold text-ink/45" aria-label={`au lieu de ${formatPrice(f.compareAtPriceCents / 100)}`}>
+                        {formatPrice(f.compareAtPriceCents / 100)}
+                      </s>
+                    )}
+                    {formatPrice(f.price)}
+                  </span>
                 </div>
                 <p className="mt-0.5 text-sm font-semibold" style={{ color: heroFor(f).ink }}>
                   {f.tagline}

@@ -4,16 +4,17 @@ import { useActionState, useState } from "react";
 import Can from "./Can";
 import { checkCoupon, placeOrder, type CouponState, type FormState } from "@/lib/shop-actions";
 import { formatPrice } from "@/lib/flavors";
-import type { CartLine } from "@/lib/queries";
+import type { Cart } from "@/lib/queries";
 import { deliveryDelay, shippingFor, type ShippingMethod } from "@/lib/shipping";
 
 const initialOrder: FormState = { error: null };
-const initialCoupon: CouponState = { error: null, percent: null };
+const initialCoupon: CouponState = { error: null, code: null, discountCents: null };
 const euros = (cents: number) => formatPrice(cents / 100);
 
-type Props = { lines: CartLine[]; subtotalCents: number; defaultName: string; methods: ShippingMethod[] };
+type Props = { cart: Cart; defaultName: string; methods: ShippingMethod[] };
 
-export default function CheckoutForm({ lines, subtotalCents, defaultName, methods }: Props) {
+export default function CheckoutForm({ cart, defaultName, methods }: Props) {
+  const { lines, packs, subtotalCents } = cart;
   const [orderState, orderAction, ordering] = useActionState(placeOrder, initialOrder);
   const [couponState, couponAction, checking] = useActionState(checkCoupon, initialCoupon);
   const [coupon, setCoupon] = useState("");
@@ -21,8 +22,10 @@ export default function CheckoutForm({ lines, subtotalCents, defaultName, method
   const method = methods.find((m) => m.code === methodCode);
   const relay = method?.kind === "relay";
 
-  // Aperçu côté client ; le montant réel est recalculé par place_order() en base
-  const discount = Math.round((subtotalCents * (couponState.percent ?? 0)) / 100);
+  // Aperçu : la remise vient de cart_quote() en base ; le montant payé est recalculé par place_order()
+  const discount = couponState.discountCents ?? 0;
+  const issues = [...lines.map((l) => l.issue), ...packs.map((p) => p.issue)].filter(Boolean) as string[];
+  const savings = cart.savingsCents + discount;
   const shipping = method ? shippingFor(method, subtotalCents - discount) : 0;
   const total = subtotalCents - discount + shipping;
 
@@ -99,7 +102,7 @@ export default function CheckoutForm({ lines, subtotalCents, defaultName, method
             <input name="shipping_city" required autoComplete={relay ? "off" : "address-level2"} className="field font-normal" />
           </label>
         </div>
-        <input type="hidden" name="coupon" value={couponState.percent ? coupon : ""} />
+        <input type="hidden" name="coupon" value={couponState.code ?? ""} />
         <div className="rounded-3xl bg-sky/40 p-5 text-sm">
           <p className="font-semibold">Paiement simulé</p>
           <p className="text-ink/70">Le paiement en ligne (Stripe) n&apos;est pas encore branché : la commande est enregistrée comme payée.</p>
@@ -117,7 +120,22 @@ export default function CheckoutForm({ lines, subtotalCents, defaultName, method
               <span className="text-sm font-semibold tabular-nums">{euros(lineCents)}</span>
             </li>
           ))}
+          {packs.map((pack) => (
+            <li key={pack.id} className="flex items-start gap-3">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-sky/60 font-display text-sm font-extrabold text-navy">×{pack.size}</span>
+              <span className="flex-1 text-sm">
+                <span className="font-semibold">{pack.quantity} × {pack.name}</span>
+                <span className="block text-xs text-ink/60">{pack.contents.map((c) => `${c.count} ${c.flavor.name}`).join(", ")}</span>
+              </span>
+              <span className="text-sm font-semibold tabular-nums">{euros(pack.lineCents)}</span>
+            </li>
+          ))}
         </ul>
+        {issues.length > 0 && (
+          <ul role="alert" className="mt-4 space-y-1 rounded-2xl bg-corail/15 p-3 text-xs font-semibold text-red-800">
+            {issues.map((issue) => <li key={issue}>{issue}</li>)}
+          </ul>
+        )}
 
         <form action={couponAction} className="mt-6 flex gap-2">
           <label htmlFor="coupon" className="sr-only">Code promo</label>
@@ -139,8 +157,13 @@ export default function CheckoutForm({ lines, subtotalCents, defaultName, method
             <dd className="tabular-nums">{shipping === 0 ? "Offerte" : euros(shipping)}</dd>
           </div>
           <div className="flex justify-between pt-2 text-lg font-bold"><dt>Total</dt><dd className="tabular-nums">{euros(total)}</dd></div>
+          {savings > 0 && (
+            <div className="flex justify-between rounded-xl bg-sky/40 px-3 py-2 font-semibold text-navy">
+              <dt>Tu économises</dt><dd className="tabular-nums">{euros(savings)}</dd>
+            </div>
+          )}
         </dl>
-        <button form="checkout" disabled={ordering || !method} className="btn btn-primary mt-4 w-full py-4">
+        <button form="checkout" disabled={ordering || !method || issues.length > 0} className="btn btn-primary mt-4 w-full py-4">
           {ordering ? "Validation…" : `Payer ${euros(total)}`}
         </button>
       </aside>

@@ -34,6 +34,9 @@ export type Flavor = {
   pattern: Pattern;
   avgRating: number;
   reviewCount: number;
+  status: "active" | "hidden" | "out_of_stock";
+  compareAtPriceCents: number | null; // prix barré, s'il y a une promotion
+  sku: string;
 };
 
 export function toFlavor(row: Views<"product_catalog">): Flavor {
@@ -58,8 +61,14 @@ export function toFlavor(row: Views<"product_catalog">): Flavor {
     pattern: row.pattern ?? "bubbles",
     avgRating: Number(row.avg_rating ?? 0),
     reviewCount: row.review_count ?? 0,
+    status: row.status ?? "active",
+    compareAtPriceCents: row.compare_at_price_cents && row.compare_at_price_cents > (row.price_cents ?? 0) ? row.compare_at_price_cents : null,
+    sku: row.sku ?? "",
   };
 }
+
+// Épuisée : stock à zéro ou mise en rupture par l'admin
+export const isSoldOut = (flavor: Pick<Flavor, "stock" | "status">) => flavor.stock === 0 || flavor.status === "out_of_stock";
 
 export const formatPrice = (value: number) =>
   value.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });

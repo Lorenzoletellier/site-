@@ -28,12 +28,53 @@ export async function updateOrderStatus(formData: FormData) {
   revalidatePath("/admin", "layout");
 }
 
+const STOCK_REASONS = ["restock", "adjustment", "return"] as const;
+const PRODUCT_STATUSES = ["active", "hidden", "out_of_stock"] as const;
+const euroToCents = (value: FormDataEntryValue | null) => Math.round(Number(String(value ?? "").trim().replace(",", ".")) * 100);
+
+// Nouveau stock saisi par l'admin : l'écart est enregistré dans le journal avec son motif
 export async function updateStock(formData: FormData) {
   const productId = Number(formData.get("product_id"));
   const stock = Number(formData.get("stock"));
+  const reason = String(formData.get("reason") ?? "adjustment") as (typeof STOCK_REASONS)[number];
+  const note = String(formData.get("note") ?? "").trim().slice(0, 200) || null;
   if (!Number.isInteger(productId) || !Number.isInteger(stock) || stock < 0 || stock > 99999) return;
+  if (!STOCK_REASONS.includes(reason)) return;
   const supabase = await adminClient();
-  await supabase.from("products").update({ stock }).eq("id", productId);
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data: product } = await supabase.from("products").select("stock").eq("id", productId).single();
+  if (!product || !user || product.stock === stock) return;
+  const { error } = await supabase.from("products").update({ stock }).eq("id", productId);
+  if (error) return;
+  await supabase.from("stock_movements").insert({
+    product_id: productId, delta: stock - product.stock, reason, note, created_by: user.id,
+  });
+  revalidatePath("/", "layout");
+}
+
+// Prix de vente, prix barré (promotion, vide pour aucun) et statut : en vente, masquée ou en rupture
+export async function updateProductCommerce(formData: FormData) {
+  const productId = Number(formData.get("product_id"));
+  const price = euroToCents(formData.get("price"));
+  const rawCompare = String(formData.get("compare_at") ?? "").trim();
+  const compare = rawCompare ? euroToCents(rawCompare) : null;
+  const status = String(formData.get("status")) as (typeof PRODUCT_STATUSES)[number];
+  if (!Number.isInteger(productId) || !Number.isInteger(price) || price <= 0 || price > 10000) return;
+  if (compare !== null && (!Number.isInteger(compare) || compare <= price || compare > 10000)) return;
+  if (!PRODUCT_STATUSES.includes(status)) return;
+  const supabase = await adminClient();
+  await supabase.from("products").update({ price_cents: price, compare_at_price_cents: compare, status }).eq("id", productId);
+  revalidatePath("/", "layout");
+}
+
+export async function updatePack(formData: FormData) {
+  const packId = Number(formData.get("pack_id"));
+  const price = euroToCents(formData.get("price"));
+  const status = String(formData.get("status")) as (typeof PRODUCT_STATUSES)[number];
+  if (!Number.isInteger(packId) || !Number.isInteger(price) || price <= 0 || price > 100000) return;
+  if (!PRODUCT_STATUSES.includes(status)) return;
+  const supabase = await adminClient();
+  await supabase.from("packs").update({ price_cents: price, status }).eq("id", packId);
   revalidatePath("/", "layout");
 }
 
@@ -87,8 +128,9 @@ export async function createProduct(_prev: ProductFormState, formData: FormData)
   if (![color, accent, secondary].every((c) => HEX_COLOR.test(c))) return { error: "Couleurs invalides." };
 
   const supabase = await adminClient();
+  const slug = slugify(name);
   const { error } = await supabase.from("products").insert({
-    name, slug: slugify(name), category_id: categoryId, price_cents: Math.round(price * 100),
+    name, slug, sku: `PET-${slug.replace(/-/g, "").toUpperCase()}-33`, category_id: categoryId, price_cents: Math.round(price * 100),
     sugar_g: sugar, kcal, stock, pattern, color, accent, secondary, ingredients,
     tagline: get("tagline"), description: get("description"), story: get("description"), pairing: get("pairing"),
   });

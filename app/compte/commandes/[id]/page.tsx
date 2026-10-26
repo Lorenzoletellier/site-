@@ -42,7 +42,11 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/co
       <ul className="mt-8 space-y-3">
         {order.order_items.map((item) => (
           <li key={item.id} className="flex items-center gap-4 rounded-2xl bg-white p-4 ring-1 ring-ink/5">
-            {item.products && <Can {...item.products} className="h-16 shrink-0" />}
+            {item.products ? (
+              <Can {...item.products} className="h-16 shrink-0" />
+            ) : (
+              <span className="grid h-16 w-12 shrink-0 place-items-center rounded-xl bg-sky/60 font-display text-sm font-extrabold text-navy" aria-hidden>pack</span>
+            )}
             <div className="flex-1">
               <p className="font-semibold">{item.product_name}</p>
               <p className="text-sm text-ink/60">{item.quantity} × {formatPrice(item.unit_price_cents)}</p>

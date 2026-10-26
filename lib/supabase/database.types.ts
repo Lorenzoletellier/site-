@@ -10,10 +10,46 @@ export type Database = {
   public: {
     Tables: {
       cart_items: {
-        Row: { added_at: string; product_id: number; quantity: number; user_id: string }
-        Insert: { added_at?: string; product_id: number; quantity: number; user_id: string }
+        Row: { added_at: string; price_cents_at_add: number | null; product_id: number; quantity: number; user_id: string }
+        Insert: { added_at?: string; price_cents_at_add?: number | null; product_id: number; quantity: number; user_id: string }
         Update: { added_at?: string; product_id?: number; quantity?: number; user_id?: string }
         Relationships: [Rel<"cart_items_product_id_fkey", "product_id", "products", "id">]
+      }
+      packs: {
+        Row: {
+          compare_at_price_cents: number | null; created_at: string; id: number; is_customizable: boolean; name: string
+          price_cents: number; product_id: number | null; size: number; slug: string; status: Database["public"]["Enums"]["product_status"]
+        }
+        Insert: {
+          compare_at_price_cents?: number | null; created_at?: string; id?: never; is_customizable?: boolean; name: string
+          price_cents: number; product_id?: number | null; size: number; slug: string; status?: Database["public"]["Enums"]["product_status"]
+        }
+        Update: {
+          compare_at_price_cents?: number | null; created_at?: string; id?: never; is_customizable?: boolean; name?: string
+          price_cents?: number; product_id?: number | null; size?: number; slug?: string; status?: Database["public"]["Enums"]["product_status"]
+        }
+        Relationships: []
+      }
+      cart_packs: {
+        Row: { added_at: string; id: number; pack_id: number; price_cents_at_add: number | null; quantity: number; selections: Json; user_id: string }
+        Insert: { added_at?: string; id?: never; pack_id: number; price_cents_at_add?: number | null; quantity: number; selections: Json; user_id: string }
+        Update: { added_at?: string; id?: never; pack_id?: number; price_cents_at_add?: number | null; quantity?: number; selections?: Json; user_id?: string }
+        Relationships: [Rel<"cart_packs_pack_id_fkey", "pack_id", "packs", "id">]
+      }
+      stock_movements: {
+        Row: {
+          created_at: string; created_by: string | null; delta: number; id: number; note: string | null; order_id: number | null
+          product_id: number; reason: Database["public"]["Enums"]["stock_reason"]
+        }
+        Insert: {
+          created_at?: string; created_by?: string | null; delta: number; id?: never; note?: string | null; order_id?: number | null
+          product_id: number; reason: Database["public"]["Enums"]["stock_reason"]
+        }
+        Update: {
+          created_at?: string; created_by?: string | null; delta?: number; id?: never; note?: string | null; order_id?: number | null
+          product_id?: number; reason?: Database["public"]["Enums"]["stock_reason"]
+        }
+        Relationships: [Rel<"stock_movements_product_id_fkey", "product_id", "products", "id">]
       }
       categories: {
         Row: { description: string | null; id: number; name: string; slug: string }
@@ -40,7 +76,10 @@ export type Database = {
         Relationships: []
       }
       order_items: {
-        Row: { id: number; order_id: number; product_id: number | null; product_name: string; quantity: number; unit_price_cents: number }
+        Row: {
+          id: number; order_id: number; pack_id: number | null; pack_selections: Json | null; product_id: number | null
+          product_name: string; quantity: number; unit_price_cents: number
+        }
         Insert: { id?: never; order_id: number; product_id?: number | null; product_name: string; quantity: number; unit_price_cents: number }
         Update: { id?: never; order_id?: number; product_id?: number | null; product_name?: string; quantity?: number; unit_price_cents?: number }
         Relationships: [
@@ -95,18 +134,22 @@ export type Database = {
       }
       products: {
         Row: {
+          compare_at_price_cents: number | null; sku: string; status: Database["public"]["Enums"]["product_status"]; volume_ml: number
+          low_stock_threshold: number; updated_at: string
           accent: string; category_id: number; color: string; created_at: string; description: string; id: number
           ingredients: string[]; is_active: boolean; kcal: number; name: string; pairing: string
           pattern: Database["public"]["Enums"]["can_pattern"]; price_cents: number; secondary: string; slug: string
           stock: number; story: string; sugar_g: number; tagline: string
         }
         Insert: {
+          sku: string; compare_at_price_cents?: number | null; status?: Database["public"]["Enums"]["product_status"]; volume_ml?: number
           accent: string; category_id: number; color: string; created_at?: string; description?: string; id?: never
           ingredients?: string[]; is_active?: boolean; kcal: number; name: string; pairing?: string
           pattern?: Database["public"]["Enums"]["can_pattern"]; price_cents: number; secondary: string; slug: string
           stock?: number; story?: string; sugar_g: number; tagline?: string
         }
         Update: {
+          sku?: string; compare_at_price_cents?: number | null; status?: Database["public"]["Enums"]["product_status"]; volume_ml?: number
           accent?: string; category_id?: number; color?: string; created_at?: string; description?: string; id?: never
           ingredients?: string[]; is_active?: boolean; kcal?: number; name?: string; pairing?: string
           pattern?: Database["public"]["Enums"]["can_pattern"]; price_cents?: number; secondary?: string; slug?: string
@@ -156,6 +199,7 @@ export type Database = {
           pairing: string | null; pattern: Database["public"]["Enums"]["can_pattern"] | null; price_cents: number | null
           review_count: number | null; secondary: string | null; slug: string | null; stock: number | null
           story: string | null; sugar_g: number | null; tagline: string | null
+          status: Database["public"]["Enums"]["product_status"] | null; compare_at_price_cents: number | null; sku: string | null; volume_ml: number | null
         }
         Relationships: []
       }
@@ -173,12 +217,15 @@ export type Database = {
         Returns: number
       }
       validate_coupon: { Args: { p_code: string }; Returns: number }
+      cart_quote: { Args: { p_coupon_code?: string | null; p_shipping_method?: string | null }; Returns: Json }
     }
     Enums: {
       can_pattern: "sunburst" | "dots" | "waves" | "stripes" | "rings" | "bubbles" | "split" | "zigzag" | "checker"
       order_status: "pending" | "paid" | "shipped" | "delivered" | "cancelled"
       user_role: "client" | "admin"
       shipping_kind: "home" | "express" | "relay"
+      product_status: "active" | "hidden" | "out_of_stock"
+      stock_reason: "order" | "cancellation" | "restock" | "adjustment" | "return"
       payment_status: "pending" | "paid" | "failed" | "cancelled" | "refunded" | "partially_refunded"
       fulfillment_status: "unfulfilled" | "preparing" | "prepared" | "cancelled"
       delivery_status: "not_shipped" | "shipped" | "in_transit" | "delivered" | "returned" | "lost" | "damaged"

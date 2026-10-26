@@ -7,7 +7,7 @@ import CartDrawer from "./CartDrawer";
 import CartBadge from "./CartBadge";
 import { BagIcon, UserIcon } from "./Icons";
 import { signOut } from "@/lib/auth-actions";
-import type { CartLine } from "@/lib/queries";
+import type { Cart } from "@/lib/queries";
 
 const links = [
   { href: "/saveurs", label: "Nos saveurs" },
@@ -21,16 +21,15 @@ type Props = {
   isLoggedIn: boolean;
   isAdmin: boolean;
   firstName: string | null;
-  lines: CartLine[];
-  subtotalCents: number;
+  cart: Cart;
   shippingNote: string | null;
 };
 
-export default function HeaderNav({ isLoggedIn, isAdmin, firstName, lines, subtotalCents, shippingNote }: Props) {
+export default function HeaderNav({ isLoggedIn, isAdmin, firstName, cart, shippingNote }: Props) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const count = lines.reduce((sum, line) => sum + line.quantity, 0);
+  const count = cart.itemCount;
   const home = pathname === "/";
   const overHero = home || BLUE_HERO_PAGES.some((page) => pathname === page || (page === "/admin" && pathname.startsWith("/admin/")));
 
@@ -106,7 +105,7 @@ export default function HeaderNav({ isLoggedIn, isAdmin, firstName, lines, subto
       {!overHero && <div className="h-16 sm:h-20" aria-hidden />}
 
       {open && (
-        <CartDrawer lines={lines} subtotalCents={subtotalCents} isLoggedIn={isLoggedIn} shippingNote={shippingNote} onClose={() => setOpen(false)} />
+        <CartDrawer cart={cart} isLoggedIn={isLoggedIn} shippingNote={shippingNote} onClose={() => setOpen(false)} />
       )}
     </>
   );
