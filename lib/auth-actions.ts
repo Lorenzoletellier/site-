@@ -99,7 +99,8 @@ export async function updateProfile(_prev: AuthFormState, formData: FormData): P
 
 export async function signOut() {
   const supabase = await createClient();
-  await supabase.auth.signOut();
+  // scope local : se déconnecter ici ne ferme pas les sessions ouvertes sur les autres appareils
+  await supabase.auth.signOut({ scope: "local" });
   revalidatePath("/", "layout");
   redirect("/");
 }

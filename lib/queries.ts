@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { toFlavor, type Flavor } from "@/lib/flavors";
+import type { ShippingMethod } from "@/lib/shipping";
 
 // Toutes les saveurs en vente, dans l'ordre de création (ordre de la gamme)
 export async function getFlavors(): Promise<Flavor[]> {
@@ -7,6 +8,27 @@ export async function getFlavors(): Promise<Flavor[]> {
   const { data, error } = await supabase.from("product_catalog").select("*").eq("is_active", true).order("id");
   if (error) throw new Error(`Saveurs indisponibles : ${error.message}`);
   return data.map(toFlavor);
+}
+
+// Modes de livraison actifs, du moins cher au plus cher (prix et délais administrables en base)
+export async function getShippingMethods(): Promise<ShippingMethod[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("shipping_methods")
+    .select("code, name, description, kind, price_cents, extra_fee_cents, free_threshold_cents, min_days, max_days")
+    .eq("is_active", true)
+    .order("sort_order");
+  if (error) return [];
+  return data.map((m) => ({
+    code: m.code,
+    name: m.name,
+    description: m.description,
+    kind: m.kind,
+    priceCents: m.price_cents + m.extra_fee_cents,
+    freeThresholdCents: m.free_threshold_cents,
+    minDays: m.min_days,
+    maxDays: m.max_days,
+  }));
 }
 
 export type PublicReview = { id: number; productId: number; rating: number; comment: string; createdAt: string };

@@ -5,16 +5,15 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import Can from "./Can";
 import { changeCartQuantity } from "@/lib/shop-actions";
-import { formatPrice, FREE_SHIPPING_CENTS } from "@/lib/flavors";
+import { formatPrice } from "@/lib/flavors";
 import type { CartLine } from "@/lib/queries";
 
-type Props = { lines: CartLine[]; subtotalCents: number; isLoggedIn: boolean; onClose: () => void };
+type Props = { lines: CartLine[]; subtotalCents: number; isLoggedIn: boolean; shippingNote: string | null; onClose: () => void };
 
-export default function CartDrawer({ lines, subtotalCents, isLoggedIn, onClose }: Props) {
+export default function CartDrawer({ lines, subtotalCents, isLoggedIn, shippingNote, onClose }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const missing = Math.max(FREE_SHIPPING_CENTS - subtotalCents, 0);
 
   // Fermer avec la touche Échap
   useEffect(() => {
@@ -72,8 +71,8 @@ export default function CartDrawer({ lines, subtotalCents, isLoggedIn, onClose }
         {isLoggedIn && (
           <div className="mt-6 border-t border-ink/10 pt-4">
             {error && <p className="mb-2 text-sm text-red-700" role="alert">{error}</p>}
-            {lines.length > 0 && missing > 0 && (
-              <p className="mb-2 text-sm text-ink/60">Plus que {formatPrice(missing / 100)} pour la livraison offerte.</p>
+            {lines.length > 0 && shippingNote && (
+              <p className="mb-2 text-sm text-ink/60">{shippingNote}.</p>
             )}
             <div className="flex justify-between text-lg font-bold">
               <span>Total</span>

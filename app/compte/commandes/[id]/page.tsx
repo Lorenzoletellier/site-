@@ -54,8 +54,11 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/co
 
       <div className="mt-8 grid gap-6 rounded-3xl bg-white p-6 ring-1 ring-ink/5 sm:grid-cols-2">
         <div className="text-sm">
-          <p className="text-xs font-semibold tracking-[0.2em] text-ink/50 uppercase">Livraison</p>
+          <p className="text-xs font-semibold tracking-[0.2em] text-ink/50 uppercase">
+            Livraison{order.shipping_kind === "relay" ? " en point relais" : order.shipping_kind === "home" ? " à domicile" : ""}
+          </p>
           <p className="mt-2">{order.shipping_name}</p>
+          {order.relay_point_label && <p className="font-semibold">{order.relay_point_label}</p>}
           <p>{order.shipping_address}</p>
           <p>{order.shipping_zip} {order.shipping_city}</p>
         </div>

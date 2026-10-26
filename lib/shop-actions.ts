@@ -58,7 +58,10 @@ export async function placeOrder(_prev: FormState, formData: FormData): Promise<
   const city = String(formData.get("shipping_city") ?? "").trim();
   const zip = String(formData.get("shipping_zip") ?? "").trim();
   const coupon = String(formData.get("coupon") ?? "").trim();
+  const method = String(formData.get("shipping_method") ?? "").trim();
+  const relayPoint = String(formData.get("relay_point_label") ?? "").trim().slice(0, 200);
 
+  if (!method) return { error: "Choisis un mode de livraison." };
   if (!name || !address || !city) return { error: "Remplis toutes les informations de livraison." };
   if (!ZIP_PATTERN.test(zip)) return { error: "Le code postal doit contenir 5 chiffres." };
 
@@ -71,7 +74,9 @@ export async function placeOrder(_prev: FormState, formData: FormData): Promise<
     p_shipping_address: address,
     p_shipping_city: city,
     p_shipping_zip: zip,
-    ...(coupon ? { p_coupon_code: coupon } : {}),
+    p_coupon_code: coupon || null,
+    p_shipping_method: method,
+    p_relay_point_label: relayPoint || null,
   });
   // Les erreurs métier de place_order (stock, panier vide, code promo) sont lisibles telles quelles
   if (error) return { error: error.message };

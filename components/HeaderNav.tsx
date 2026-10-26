@@ -15,7 +15,7 @@ const links = [
 ];
 
 // Pages ouvertes par un bandeau bleu (BlueHero) : le menu y est transparent et crème
-const BLUE_HERO_PAGES = ["/notre-histoire", "/contact", "/connexion", "/inscription", "/compte", "/admin"];
+const BLUE_HERO_PAGES = ["/notre-histoire", "/contact", "/connexion", "/inscription", "/compte", "/commande", "/admin"];
 
 type Props = {
   isLoggedIn: boolean;
@@ -23,9 +23,10 @@ type Props = {
   firstName: string | null;
   lines: CartLine[];
   subtotalCents: number;
+  shippingNote: string | null;
 };
 
-export default function HeaderNav({ isLoggedIn, isAdmin, firstName, lines, subtotalCents }: Props) {
+export default function HeaderNav({ isLoggedIn, isAdmin, firstName, lines, subtotalCents, shippingNote }: Props) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -105,7 +106,7 @@ export default function HeaderNav({ isLoggedIn, isAdmin, firstName, lines, subto
       {!overHero && <div className="h-16 sm:h-20" aria-hidden />}
 
       {open && (
-        <CartDrawer lines={lines} subtotalCents={subtotalCents} isLoggedIn={isLoggedIn} onClose={() => setOpen(false)} />
+        <CartDrawer lines={lines} subtotalCents={subtotalCents} isLoggedIn={isLoggedIn} shippingNote={shippingNote} onClose={() => setOpen(false)} />
       )}
     </>
   );

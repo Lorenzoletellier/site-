@@ -48,11 +48,32 @@ export type Database = {
           Rel<"order_items_product_id_fkey", "product_id", "products", "id">,
         ]
       }
+      shipping_methods: {
+        Row: {
+          carrier_id: number | null; code: string; description: string; extra_fee_cents: number; free_threshold_cents: number | null; id: number
+          is_active: boolean; kind: Database["public"]["Enums"]["shipping_kind"]; max_days: number; max_weight_g: number | null; min_days: number
+          name: string; price_cents: number; sort_order: number; zone_id: number
+        }
+        Insert: {
+          carrier_id?: number | null; code: string; description?: string; extra_fee_cents?: number; free_threshold_cents?: number | null; id?: never
+          is_active?: boolean; kind: Database["public"]["Enums"]["shipping_kind"]; max_days: number; max_weight_g?: number | null; min_days: number
+          name: string; price_cents: number; sort_order?: number; zone_id: number
+        }
+        Update: {
+          carrier_id?: number | null; code?: string; description?: string; extra_fee_cents?: number; free_threshold_cents?: number | null; id?: never
+          is_active?: boolean; kind?: Database["public"]["Enums"]["shipping_kind"]; max_days?: number; max_weight_g?: number | null; min_days?: number
+          name?: string; price_cents?: number; sort_order?: number; zone_id?: number
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           coupon_code: string | null; created_at: string; discount_cents: number; id: number
           shipping_address: string; shipping_cents: number; shipping_city: string; shipping_name: string; shipping_zip: string
-          status: Database["public"]["Enums"]["order_status"]; subtotal_cents: number; total_cents: number; user_id: string
+          status: Database["public"]["Enums"]["order_status"]; subtotal_cents: number; total_cents: number; user_id: string | null
+          shipping_method_id: number | null; shipping_kind: Database["public"]["Enums"]["shipping_kind"] | null; relay_point_label: string | null
+          payment_status: Database["public"]["Enums"]["payment_status"]; fulfillment_status: Database["public"]["Enums"]["fulfillment_status"]
+          delivery_status: Database["public"]["Enums"]["delivery_status"]; email: string | null
         }
         Insert: {
           coupon_code?: string | null; created_at?: string; discount_cents?: number; id?: never
@@ -143,7 +164,12 @@ export type Database = {
       has_purchased: { Args: { p_product_id: number }; Returns: boolean }
       is_admin: { Args: never; Returns: boolean }
       place_order: {
-        Args: { p_coupon_code?: string; p_shipping_address: string; p_shipping_city: string; p_shipping_name: string; p_shipping_zip: string }
+        Args:
+          | { p_coupon_code?: string; p_shipping_address: string; p_shipping_city: string; p_shipping_name: string; p_shipping_zip: string }
+          | {
+              p_coupon_code: string | null; p_relay_point_label?: string | null; p_shipping_address: string; p_shipping_city: string
+              p_shipping_method: string; p_shipping_name: string; p_shipping_zip: string
+            }
         Returns: number
       }
       validate_coupon: { Args: { p_code: string }; Returns: number }
@@ -152,6 +178,10 @@ export type Database = {
       can_pattern: "sunburst" | "dots" | "waves" | "stripes" | "rings" | "bubbles" | "split" | "zigzag" | "checker"
       order_status: "pending" | "paid" | "shipped" | "delivered" | "cancelled"
       user_role: "client" | "admin"
+      shipping_kind: "home" | "express" | "relay"
+      payment_status: "pending" | "paid" | "failed" | "cancelled" | "refunded" | "partially_refunded"
+      fulfillment_status: "unfulfilled" | "preparing" | "prepared" | "cancelled"
+      delivery_status: "not_shipped" | "shipped" | "in_transit" | "delivered" | "returned" | "lost" | "damaged"
     }
     CompositeTypes: { [_ in never]: never }
   }

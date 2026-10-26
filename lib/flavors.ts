@@ -64,6 +64,4 @@ export function toFlavor(row: Views<"product_catalog">): Flavor {
 export const formatPrice = (value: number) =>
   value.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
 
-export const FREE_SHIPPING_CENTS = 2500;
-export const SHIPPING_FEE_CENTS = 490;
 export const LOW_STOCK = 24;
